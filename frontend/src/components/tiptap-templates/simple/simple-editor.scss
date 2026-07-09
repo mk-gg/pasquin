@@ -1,0 +1,89 @@
+.simple-editor-wrapper {
+  --tt-toolbar-height: 44px;
+
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Contain the toolbar's z-index so it can't stack above the site header */
+  isolation: isolate;
+  color: var(--tt-theme-text);
+  background-color: var(--tt-bg-color);
+}
+
+/* In mobile mode the toolbar is absolutely positioned; the template's
+   width:100% assumes a full-viewport editor and overflows the right edge
+   when embedded in a card. Anchoring both edges keeps it on screen. */
+@media screen and (max-width: 480px) {
+  .simple-editor-wrapper .tiptap-toolbar[data-variant='fixed'] {
+    left: 0;
+    right: 0;
+    width: auto;
+  }
+}
+
+/* The main toolbar buttons scroll inside their own region, so the
+   dedicated save area at the far right never gets overlapped */
+.tiptap-toolbar-scroll {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--tt-scrollbar-color) transparent;
+
+  &::-webkit-scrollbar {
+    height: 0.25rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--tt-scrollbar-color);
+    border-radius: 9999px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* The content area is the scroll container (not the wrapper), so the
+   scrollbar starts below the toolbar instead of overlapping it */
+.simple-editor-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--tt-scrollbar-color) transparent;
+
+  &::-webkit-scrollbar {
+    width: 0.25rem;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--tt-scrollbar-color);
+    border-radius: 9999px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+.simple-editor-content .tiptap.ProseMirror.simple-editor {
+  max-width: 648px;
+  width: 100%;
+  margin: 0 auto;
+  min-height: 100%;
+  padding: 3rem 3rem 1.5rem;
+}
+
+@media screen and (max-width: 480px) {
+  .simple-editor-content .tiptap.ProseMirror.simple-editor {
+    padding: 1rem 1.5rem 1.5rem;
+  }
+}

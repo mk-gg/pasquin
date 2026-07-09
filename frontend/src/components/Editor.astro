@@ -1,0 +1,14 @@
+---
+import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor'
+---
+
+<div class="h-[70vh] overflow-hidden rounded-lg">
+  <SimpleEditor client:only="react">
+    <div
+      slot="fallback"
+      class="text-muted-foreground flex h-full items-center justify-center text-sm"
+    >
+      Loading editor&hellip;
+    </div>
+  </SimpleEditor>
+</div>

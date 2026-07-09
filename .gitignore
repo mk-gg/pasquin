@@ -1,0 +1,17 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors / IDEs
+.vscode/
+.idea/
+*.iml
+*.swp
+
+# Dependencies & build output (also covered per-subproject)
+node_modules/
+
+# Local env / secrets (keep .env.example). Safety net across all subprojects.
+.env
+.env.local
+.env.*.local

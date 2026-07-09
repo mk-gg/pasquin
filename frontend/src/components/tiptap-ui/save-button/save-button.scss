@@ -1,0 +1,33 @@
+.tiptap-button.tiptap-save-button {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  padding-inline: 0.625rem;
+
+  .tiptap-button-text {
+    color: var(--primary-foreground);
+  }
+
+  &:hover:not(:disabled) {
+    background-color: color-mix(in oklab, var(--primary) 85%, var(--background));
+    color: var(--primary-foreground);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+  }
+}
+
+/* Dedicated non-scrolling area at the far right of the toolbar; the other
+   buttons live in .tiptap-toolbar-scroll and scroll in their own region */
+.tiptap-toolbar .tiptap-toolbar-group.toolbar-save-group {
+  flex-shrink: 0;
+  border-left: 1px solid var(--tt-toolbar-border-color);
+  padding-left: 0.375rem;
+}
+
+/* Mirror area at the far left (sidebar trigger) */
+.tiptap-toolbar .tiptap-toolbar-group.toolbar-leading-group {
+  flex-shrink: 0;
+  border-right: 1px solid var(--tt-toolbar-border-color);
+  padding-right: 0.375rem;
+}

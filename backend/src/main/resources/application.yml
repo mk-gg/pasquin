@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: notes
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: 8080
+
+notes:
+  rate-limit:
+    create-per-hour: 30
+    unlock-per-minute: 10
+    mutate-per-minute: 120
+    submit-per-hour: 10
+  cors:
+    allowed-origins:
+      - http://localhost:1234
+      - http://localhost:4321
+  aws:
+    region: us-east-1
+    table-name: notes
+    bucket: notes-content
+    submissions-table: notes-submissions

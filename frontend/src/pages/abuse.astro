@@ -1,0 +1,13 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import ReportAbusePage from '@/components/ReportAbusePage.tsx'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout class="max-w-4xl">
+  <PageHead slot="head" title="report abuse" />
+  <Breadcrumbs items={[{ label: 'report abuse', icon: 'lucide:flag' }]} />
+
+  <ReportAbusePage client:load />
+</Layout>
