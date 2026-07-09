@@ -78,9 +78,8 @@ resource "aws_apprunner_service" "backend" {
           # Cap heap so the JVM leaves room for AWS SDK metaspace/threads
           # inside the container's memory limit.
           JAVA_OPTS = "-XX:MaxRAMPercentage=70.0"
-          # Front the API with the CloudFront URL once the site is deployed;
-          # add the custom domain here too. Comma-separated.
-          NOTES_CORS_ALLOWEDORIGINS = "https://${aws_cloudfront_distribution.site.domain_name}"
+          # Allow both the CloudFront default domain and the custom domain.
+          NOTES_CORS_ALLOWEDORIGINS = "https://${aws_cloudfront_distribution.site.domain_name},https://${var.domain_name}"
         }
       }
     }

@@ -19,7 +19,7 @@ import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 import tailwindcss from '@tailwindcss/vite'
 
 export default defineConfig({
-  site: 'https://d1ilylb2b5and1.cloudfront.net',
+  site: 'https://pasquin.mkgg.dev',
   prefetch: {
     prefetchAll: true,
     defaultStrategy: 'viewport',

@@ -21,3 +21,9 @@ variable "github_repo" {
   type        = string
   default     = "mk-gg/pasquin"
 }
+
+variable "domain_name" {
+  description = "Custom domain for the frontend (CloudFront alias)"
+  type        = string
+  default     = "pasquin.mkgg.dev"
+}

@@ -2,15 +2,19 @@
 
 **Anonymous notes, shared instantly.** Write a note, get a shareable link — no account required. Optionally protect it with a password or set it to auto-expire.
 
-🔗 **Live demo:** https://d1ilylb2b5and1.cloudfront.net
+🔗 **Live demo:** https://pasquin.mkgg.dev
 
 > *A [pasquinade](https://en.wikipedia.org/wiki/Pasquinade) is an anonymous note posted in a public place — named after "Pasquino," a statue in Renaissance Rome where people stuck up anonymous verses. That's exactly what this app is: anonymous notes, posted to a public link.*
 
-<!--
-  SCREENSHOTS: add 2–3 here once captured, e.g.
-  ![Editor](docs/editor.png)
-  ![Share dialog](docs/share.png)
--->
+## Screenshots
+
+| | |
+| --- | --- |
+| ![The rich-text editor](docs/editor.png) | ![Share dialog with QR code](docs/share.png) |
+| *The editor* | *Share dialog with QR code* |
+
+![Viewing a shared note](docs/viewer.png)
+*Reading a shared note*
 
 ---
 

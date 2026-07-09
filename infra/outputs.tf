@@ -15,8 +15,26 @@ output "site_bucket" {
 }
 
 output "cloudfront_domain" {
-  description = "Frontend URL (until a custom domain is attached)"
+  description = "CloudFront default frontend URL"
   value       = "https://${aws_cloudfront_distribution.site.domain_name}"
+}
+
+output "site_url" {
+  description = "Custom-domain frontend URL"
+  value       = "https://${var.domain_name}"
+}
+
+# CNAME to add at your DNS host (Porkbun) so ACM can validate the certificate.
+output "acm_validation_record" {
+  description = "Add this CNAME at Porkbun to validate the TLS certificate"
+  value = {
+    for dvo in aws_acm_certificate.site.domain_validation_options :
+    dvo.domain_name => {
+      name  = dvo.resource_record_name
+      type  = dvo.resource_record_type
+      value = dvo.resource_record_value
+    }
+  }
 }
 
 output "cloudfront_distribution_id" {
