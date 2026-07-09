@@ -138,3 +138,61 @@ export function submitContact(payload: ContactPayload): Promise<void> {
 export function submitReport(payload: ReportPayload): Promise<void> {
   return request('/api/reports', { method: 'POST', body: JSON.stringify(payload) })
 }
+
+// --- Auth & account note sync ---
+
+export interface AuthResult {
+  token: string
+  email: string
+  name: string | null
+}
+
+/** A note owned by the signed-in account (server-synced form of a local note). */
+export interface AccountNote {
+  slug: string
+  editKey: string
+  title: string
+  createdAt: string
+  expiresAt: string | null
+}
+
+export function signInWithGoogle(idToken: string): Promise<AuthResult> {
+  return request('/api/auth/google', {
+    method: 'POST',
+    body: JSON.stringify({ idToken }),
+  })
+}
+
+function authed(token: string): RequestInit {
+  return { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
+}
+
+export function getAccountNotes(token: string): Promise<AccountNote[]> {
+  return request('/api/me/notes', authed(token))
+}
+
+export function putAccountNote(token: string, note: AccountNote): Promise<void> {
+  return request('/api/me/notes', {
+    method: 'PUT',
+    ...authed(token),
+    body: JSON.stringify(note),
+  })
+}
+
+export function deleteAccountNote(token: string, slug: string): Promise<void> {
+  return request(`/api/me/notes/${encodeURIComponent(slug)}`, {
+    method: 'DELETE',
+    ...authed(token),
+  })
+}
+
+export function mergeAccountNotes(
+  token: string,
+  notes: AccountNote[]
+): Promise<AccountNote[]> {
+  return request('/api/me/notes/merge', {
+    method: 'POST',
+    ...authed(token),
+    body: JSON.stringify(notes),
+  })
+}

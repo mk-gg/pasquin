@@ -18,6 +18,12 @@ data "aws_iam_policy_document" "backend" {
   }
 
   statement {
+    sid       = "UsersTable"
+    actions   = ["dynamodb:GetItem", "dynamodb:PutItem"]
+    resources = [aws_dynamodb_table.users.arn]
+  }
+
+  statement {
     sid = "NotesContent"
     actions = [
       "s3:GetObject",

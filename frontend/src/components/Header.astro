@@ -1,4 +1,5 @@
 ---
+import AuthButton from '@/components/AuthButton'
 import Link from '@/components/Link.astro'
 import ThemeToggle from '@/components/ThemeToggle.astro'
 import MobileMenu from '@/components/ui/mobile-menu'
@@ -32,6 +33,7 @@ import logo from '../../public/static/logo.svg'
       </nav>
       <MobileMenu client:load transition:persist />
       <ThemeToggle transition:persist />
+      <AuthButton client:only="react" />
     </div>
   </div>
 </header>

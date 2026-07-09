@@ -1,6 +1,13 @@
 # Backend runtime: App Runner pulls the container image from ECR. The image
 # must be pushed before `terraform apply` creates the service (see README).
 
+# Secret for signing user session tokens. Generated once and kept in state
+# (local, gitignored) — never appears in committed files.
+resource "random_password" "jwt_secret" {
+  length  = 48
+  special = false
+}
+
 resource "aws_ecr_repository" "backend" {
   name                 = "${var.project}-backend"
   image_tag_mutability = "MUTABLE"
@@ -75,6 +82,9 @@ resource "aws_apprunner_service" "backend" {
           NOTES_AWS_TABLENAME        = aws_dynamodb_table.notes.name
           NOTES_AWS_BUCKET           = aws_s3_bucket.content.bucket
           NOTES_AWS_SUBMISSIONSTABLE = aws_dynamodb_table.submissions.name
+          NOTES_AWS_USERSTABLE       = aws_dynamodb_table.users.name
+          GOOGLE_CLIENT_ID           = var.google_client_id
+          JWT_SECRET                 = random_password.jwt_secret.result
           # Cap heap so the JVM leaves room for AWS SDK metaspace/threads
           # inside the container's memory limit.
           JAVA_OPTS = "-XX:MaxRAMPercentage=70.0"

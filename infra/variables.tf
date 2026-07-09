@@ -27,3 +27,9 @@ variable "domain_name" {
   type        = string
   default     = "pasquin.mkgg.dev"
 }
+
+variable "google_client_id" {
+  description = "Google OAuth client id (public; the audience for ID tokens)"
+  type        = string
+  default     = "371854982599-q0uu06bo4mvcq0cba2r5b42eso80jg9j.apps.googleusercontent.com"
+}

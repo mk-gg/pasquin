@@ -5,7 +5,16 @@
  * server); account sync can back this up later.
  */
 
-import { ApiError, getNote, updateNote } from '@/lib/api'
+import {
+  ApiError,
+  deleteAccountNote,
+  getNote,
+  mergeAccountNotes,
+  putAccountNote,
+  updateNote,
+  type AccountNote,
+} from '@/lib/api'
+import { getToken } from '@/lib/auth'
 
 export interface MyNote {
   slug: string
@@ -14,6 +23,16 @@ export interface MyNote {
   createdAt: string
   expiresAt: string | null
   keyBannerDismissed?: boolean
+}
+
+function toAccountNote(note: MyNote): AccountNote {
+  return {
+    slug: note.slug,
+    editKey: note.editKey,
+    title: note.title,
+    createdAt: note.createdAt,
+    expiresAt: note.expiresAt,
+  }
 }
 
 const STORAGE_KEY = 'my-notes'
@@ -42,6 +61,8 @@ export function addMyNote(note: MyNote): void {
   const notes = load()
   notes[note.slug] = note
   save(notes)
+  const token = getToken()
+  if (token) putAccountNote(token, toAccountNote(note)).catch(() => {})
 }
 
 export function getMyNote(slug: string): MyNote | null {
@@ -59,6 +80,8 @@ export function renameMyNote(slug: string, title: string): void {
   if (notes[slug]) {
     notes[slug].title = title
     save(notes)
+    const token = getToken()
+    if (token) putAccountNote(token, toAccountNote(notes[slug])).catch(() => {})
   }
 }
 
@@ -66,6 +89,28 @@ export function removeMyNote(slug: string): void {
   const notes = load()
   delete notes[slug]
   save(notes)
+  const token = getToken()
+  if (token) deleteAccountNote(token, slug).catch(() => {})
+}
+
+/**
+ * On sign-in, push local notes to the account and pull the merged set back
+ * into localStorage, so this browser ends up with every note the account owns
+ * (including ones created on other devices).
+ */
+export async function syncOnSignIn(): Promise<void> {
+  const token = getToken()
+  if (!token) return
+  try {
+    const merged = await mergeAccountNotes(token, listMyNotes().map(toAccountNote))
+    const notes = load()
+    for (const note of merged) {
+      notes[note.slug] = { ...note, keyBannerDismissed: true }
+    }
+    save(notes)
+  } catch {
+    // best effort; keep local notes as they are
+  }
 }
 
 export function dismissKeyBanner(slug: string): void {

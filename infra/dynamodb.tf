@@ -40,3 +40,19 @@ resource "aws_dynamodb_table" "submissions" {
     Project = var.project
   }
 }
+
+# User accounts (Google sign-in) with their synced note lists.
+resource "aws_dynamodb_table" "users" {
+  name         = "${var.notes_table_name}-users"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "id"
+
+  attribute {
+    name = "id"
+    type = "S"
+  }
+
+  tags = {
+    Project = var.project
+  }
+}
