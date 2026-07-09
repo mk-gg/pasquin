@@ -29,6 +29,11 @@ output "apprunner_service_arn" {
   value       = aws_apprunner_service.backend.arn
 }
 
+output "github_actions_role_arn" {
+  description = "Set as the AWS_DEPLOY_ROLE_ARN GitHub Actions variable"
+  value       = aws_iam_role.github_actions.arn
+}
+
 output "backend_policy_arn" {
   description = "Attach to the role/user running Spring Boot"
   value       = aws_iam_policy.backend.arn
