@@ -9,9 +9,18 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @param cors CORS settings for the frontend origins
  * @param aws names of the AWS resources used by the {@code aws} profile
  * @param rateLimit per-client request limits for abuse-prone endpoints
+ * @param auth Google sign-in and session-token settings
  */
 @ConfigurationProperties(prefix = "notes")
-public record NotesProperties(Cors cors, Aws aws, RateLimit rateLimit) {
+public record NotesProperties(Cors cors, Aws aws, RateLimit rateLimit, Auth auth) {
+
+  /**
+   * Authentication settings.
+   *
+   * @param googleClientId OAuth client ID; the expected audience of Google ID tokens
+   * @param jwtSecret HMAC secret for signing our own session tokens (at least 32 chars)
+   */
+  public record Auth(String googleClientId, String jwtSecret) {}
 
   /**
    * Per-client rate limits.
@@ -38,6 +47,8 @@ public record NotesProperties(Cors cors, Aws aws, RateLimit rateLimit) {
    * @param tableName DynamoDB table holding note metadata
    * @param bucket S3 bucket holding note content
    * @param submissionsTable DynamoDB table holding contact/report submissions
+   * @param usersTable DynamoDB table holding user accounts and their note lists
    */
-  public record Aws(String region, String tableName, String bucket, String submissionsTable) {}
+  public record Aws(
+      String region, String tableName, String bucket, String submissionsTable, String usersTable) {}
 }

@@ -24,6 +24,11 @@ public class GlobalExceptionHandler {
     return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
   }
 
+  @ExceptionHandler(InvalidTokenException.class)
+  public ProblemDetail handleInvalidToken(InvalidTokenException e) {
+    return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
+  }
+
   @ExceptionHandler(IllegalArgumentException.class)
   public ProblemDetail handleIllegalArgument(IllegalArgumentException e) {
     return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());

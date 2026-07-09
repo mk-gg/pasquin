@@ -23,3 +23,9 @@ notes:
     table-name: notes
     bucket: notes-content
     submissions-table: notes-submissions
+    users-table: notes-users
+  auth:
+    # Client ID is public. The JWT secret must be overridden in production via
+    # the JWT_SECRET env var (the default here is for local dev only).
+    google-client-id: ${GOOGLE_CLIENT_ID:371854982599-q0uu06bo4mvcq0cba2r5b42eso80jg9j.apps.googleusercontent.com}
+    jwt-secret: ${JWT_SECRET:dev-only-insecure-secret-change-me-please}

@@ -19,8 +19,10 @@ class RateLimitFilterTest {
     NotesProperties properties =
         new NotesProperties(
             new NotesProperties.Cors(List.of()),
-            new NotesProperties.Aws("us-east-1", "notes", "notes-content", "notes-submissions"),
-            new NotesProperties.RateLimit(2, 2, 2, 2));
+            new NotesProperties.Aws(
+                "us-east-1", "notes", "notes-content", "notes-submissions", "notes-users"),
+            new NotesProperties.RateLimit(2, 2, 2, 2),
+            new NotesProperties.Auth("client-id", "test-secret-at-least-32-characters-long"));
     filter = new RateLimitFilter(properties);
   }
 
