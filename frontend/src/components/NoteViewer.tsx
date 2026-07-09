@@ -42,7 +42,7 @@ function resolveSlug(): string | null {
 }
 
 function noteUrl(slug: string): string {
-  return `${window.location.origin}/n?id=${slug}`
+  return `${window.location.origin}/n/${slug}`
 }
 
 /** Formats time remaining as the largest whole unit: "31d", "7h", "49m", "<1m". */

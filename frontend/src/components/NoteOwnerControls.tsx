@@ -37,7 +37,7 @@ import { Separator } from "@/components/ui/separator"
 import { Switch } from "@/components/ui/switch"
 
 function noteUrl(slug: string): string {
-  return `${window.location.origin}/n?id=${slug}`
+  return `${window.location.origin}/n/${slug}`
 }
 
 const MIN_PASSWORD_LENGTH = 4

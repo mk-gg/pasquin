@@ -49,7 +49,7 @@ import {
 } from "@/components/ui/tooltip"
 
 function noteUrl(slug: string): string {
-  return `${window.location.origin}/n?id=${slug}`
+  return `${window.location.origin}/n/${slug}`
 }
 
 function relativeTime(iso: string): string {

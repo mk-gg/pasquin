@@ -74,7 +74,24 @@ export default defineConfig({
     icon(),
   ],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      {
+        // Dev-only: mirror the CloudFront `/n/*` rewrite so path-style note
+        // URLs (/n/{slug}) serve the viewer page locally. The browser URL is
+        // untouched; only the dev server's internal request is rewritten, so
+        // the client still reads the real slug from the path.
+        name: 'note-slug-dev-rewrite',
+        configureServer(server) {
+          server.middlewares.use((req, _res, next) => {
+            if (req.url && /^\/n\/[A-Za-z0-9]+(\/|\?|$)/.test(req.url)) {
+              req.url = '/n/'
+            }
+            next()
+          })
+        },
+      },
+    ],
   },
   server: {
     port: 1234,

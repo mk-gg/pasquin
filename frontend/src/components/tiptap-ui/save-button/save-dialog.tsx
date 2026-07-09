@@ -107,7 +107,7 @@ export function SaveNoteDialog({
         // non-fatal
       }
       toast.success("Note saved!")
-      window.location.assign(`/n?id=${created.slug}`)
+      window.location.assign(`/n/${created.slug}`)
     } catch (e) {
       setError(e instanceof ApiError ? e.message : "Something went wrong. Please try again.")
       setSaving(false)

@@ -45,7 +45,7 @@ export function EditKeyDialog({
     setError(null)
     try {
       await adoptNote(slug, key)
-      window.location.assign(`/n?id=${slug}`)
+      window.location.assign(`/n/${slug}`)
     } catch (e) {
       setError(
         e instanceof ApiError && e.status === 403
