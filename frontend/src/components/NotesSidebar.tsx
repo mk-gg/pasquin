@@ -15,6 +15,7 @@ import {
   listMyNotes,
   removeMyNote,
   renameMyNote,
+  syncOnSignIn,
   type MyNote,
 } from "@/lib/my-notes"
 import { Button as TiptapButton } from "@/components/tiptap-ui-primitive/button"
@@ -76,8 +77,14 @@ export function NotesSidebar({ currentSlug }: { currentSlug?: string }) {
   const [busy, setBusy] = useState(false)
 
   useEffect(() => {
-    if (open) setNotes(listMyNotes())
-  }, [open])
+    if (!open) return
+    setNotes(listMyNotes())
+    // Signed-in users also pull notes created on other devices; show the
+    // local list immediately and refresh once the account merge lands.
+    if (signedIn) {
+      syncOnSignIn().then(() => setNotes(listMyNotes()))
+    }
+  }, [open, signedIn])
 
   const filtered = notes.filter((note) =>
     note.title.toLowerCase().includes(query.trim().toLowerCase())
