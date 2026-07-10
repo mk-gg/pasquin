@@ -59,13 +59,10 @@
       background: transparent;
     }
 
+    /* The toolbar stays sticky at the top on mobile too: bottom-anchoring
+       it over the virtual keyboard needs visual-viewport tracking that is
+       unreliable across Android browsers. */
     @media (max-width: 480px) {
-      position: absolute;
-      top: auto;
-      height: calc(var(--tt-toolbar-height) + var(--tt-safe-area-bottom));
-      border-top: 1px solid var(--tt-toolbar-border-color);
-      border-bottom: none;
-      padding: 0 0.5rem var(--tt-safe-area-bottom);
       flex-wrap: nowrap;
       justify-content: flex-start;
 

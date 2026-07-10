@@ -59,8 +59,6 @@ import { LinkIcon } from "@/components/tiptap-icons/link-icon"
 
 // --- Hooks ---
 import { useIsBreakpoint } from "@/hooks/use-is-breakpoint"
-import { useWindowSize } from "@/hooks/use-window-size"
-import { useCursorVisibility } from "@/hooks/use-cursor-visibility"
 
 // --- Components ---
 
@@ -202,11 +200,9 @@ export function SimpleEditor({
   banner,
 }: SimpleEditorProps = {}) {
   const isMobile = useIsBreakpoint()
-  const { height } = useWindowSize()
   const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
     "main"
   )
-  const toolbarRef = useRef<HTMLDivElement>(null)
   const saveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null)
   const onDocChangeRef = useRef(onDocChange)
   onDocChangeRef.current = onDocChange
@@ -278,11 +274,6 @@ export function SimpleEditor({
     ],
   })
 
-  const rect = useCursorVisibility({
-    editor,
-    overlayHeight: toolbarRef.current?.getBoundingClientRect().height ?? 0,
-  })
-
   useEffect(() => {
     if (!isMobile && mobileView !== "main") {
       setMobileView("main")
@@ -311,16 +302,7 @@ export function SimpleEditor({
   return (
     <div className="simple-editor-wrapper">
       <EditorContext.Provider value={{ editor }}>
-        <Toolbar
-          ref={toolbarRef}
-          style={{
-            ...(isMobile
-              ? {
-                  bottom: `calc(100% - ${height - rect.y}px)`,
-                }
-              : {}),
-          }}
-        >
+        <Toolbar>
           {mobileView === "main" ? (
             <MainToolbarContent
               onHighlighterClick={() => setMobileView("highlighter")}

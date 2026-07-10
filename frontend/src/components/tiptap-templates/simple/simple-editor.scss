@@ -12,17 +12,6 @@
   background-color: var(--tt-bg-color);
 }
 
-/* In mobile mode the toolbar is absolutely positioned; the template's
-   width:100% assumes a full-viewport editor and overflows the right edge
-   when embedded in a card. Anchoring both edges keeps it on screen. */
-@media screen and (max-width: 480px) {
-  .simple-editor-wrapper .tiptap-toolbar[data-variant='fixed'] {
-    left: 0;
-    right: 0;
-    width: auto;
-  }
-}
-
 /* The main toolbar buttons scroll inside their own region, so the
    dedicated save area at the far right never gets overlapped */
 .tiptap-toolbar-scroll {
