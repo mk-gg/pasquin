@@ -18,6 +18,7 @@ export const GOOGLE_CLIENT_ID: string =
 export interface AuthUser {
   email: string
   name: string | null
+  picture: string | null
 }
 
 export function getToken(): string | null {

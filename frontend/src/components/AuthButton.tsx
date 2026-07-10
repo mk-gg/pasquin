@@ -4,6 +4,7 @@ import { toast } from "sonner"
 
 import { onSignInRequest, signOut, useAuth } from "@/lib/auth"
 import { SignInDialog } from "@/components/SignInDialog"
+import { UserAvatar } from "@/components/UserAvatar"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -51,9 +52,7 @@ export function AuthButton() {
                 className="size-8 rounded-full"
                 aria-label="Account menu"
               >
-                <span className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-full text-xs font-medium">
-                  {(user.name || user.email).charAt(0).toUpperCase()}
-                </span>
+                <UserAvatar user={user} />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">

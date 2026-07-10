@@ -36,7 +36,7 @@ public class AuthService {
             .orElseGet(() -> new User(google.sub(), google.email(), google.name(), List.of()));
     userRepository.save(user);
     String token = jwtService.issue(user.id(), user.email());
-    return new AuthResponse(token, user.email(), user.name());
+    return new AuthResponse(token, user.email(), user.name(), google.picture());
   }
 
   public List<OwnedNote> getNotes(String userId) {

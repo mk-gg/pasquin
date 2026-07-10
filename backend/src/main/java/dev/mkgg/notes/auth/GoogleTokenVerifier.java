@@ -60,7 +60,8 @@ public class GoogleTokenVerifier {
       if (sub == null || email == null) {
         throw new InvalidTokenException();
       }
-      return new GoogleUser(sub, email, claims.getStringClaim("name"));
+      return new GoogleUser(
+          sub, email, claims.getStringClaim("name"), claims.getStringClaim("picture"));
     } catch (InvalidTokenException e) {
       throw e;
     } catch (Exception e) {

@@ -145,6 +145,7 @@ export interface AuthResult {
   token: string
   email: string
   name: string | null
+  picture: string | null
 }
 
 /** A note owned by the signed-in account (server-synced form of a local note). */

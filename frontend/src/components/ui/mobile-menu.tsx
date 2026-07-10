@@ -9,6 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { UserAvatar } from '@/components/UserAvatar'
 import { NAV_LINKS } from '@/consts'
 import { requestSignIn, signOut, useAuth } from '@/lib/auth'
 import { LogIn, LogOut, Menu } from 'lucide-react'
@@ -65,12 +66,15 @@ const MobileMenu = () => {
         <DropdownMenuSeparator />
         {signedIn && user ? (
           <>
-            <DropdownMenuLabel className="font-normal">
-              {user.name && (
-                <div className="text-sm font-medium">{user.name}</div>
-              )}
-              <div className="text-muted-foreground max-w-48 truncate text-xs">
-                {user.email}
+            <DropdownMenuLabel className="flex items-center gap-2 font-normal">
+              <UserAvatar user={user} />
+              <div className="min-w-0">
+                {user.name && (
+                  <div className="text-sm font-medium">{user.name}</div>
+                )}
+                <div className="text-muted-foreground max-w-44 truncate text-xs">
+                  {user.email}
+                </div>
               </div>
             </DropdownMenuLabel>
             <DropdownMenuItem

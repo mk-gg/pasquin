@@ -74,7 +74,11 @@ export function GoogleSignInButton({ onSuccess }: { onSuccess?: () => void }) {
           callback: async (response: { credential: string }) => {
             try {
               const result = await signInWithGoogle(response.credential)
-              setAuth(result.token, { email: result.email, name: result.name })
+              setAuth(result.token, {
+                email: result.email,
+                name: result.name,
+                picture: result.picture,
+              })
               await syncOnSignIn()
               toast.success(`Signed in as ${result.email}`)
               onSuccessRef.current?.()
