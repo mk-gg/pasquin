@@ -7,9 +7,12 @@ import Favicons from './Favicons.astro'
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- interactive-widget=resizes-content: on Android Chrome the virtual
+       keyboard shrinks the layout viewport, so bottom-anchored UI (the mobile
+       editor toolbar) stays above the keyboard instead of behind it. -->
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, user-scalable=yes"
+    content="width=device-width, initial-scale=1.0, user-scalable=yes, interactive-widget=resizes-content"
   />
   <meta name="generator" content={Astro.generator} />
 

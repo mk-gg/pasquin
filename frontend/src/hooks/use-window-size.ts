@@ -80,12 +80,17 @@ export function useWindowSize(): WindowSizeState {
     const visualViewport = window.visualViewport
     if (!visualViewport) return
 
+    // The keyboard opening/closing fires "resize"; panning the visual viewport
+    // while the keyboard is up fires "scroll". Both move offsetTop/height, so
+    // the bottom-anchored toolbar must react to each or it drifts / sticks.
     visualViewport.addEventListener("resize", handleViewportChange)
+    visualViewport.addEventListener("scroll", handleViewportChange)
 
     handleViewportChange()
 
     return () => {
       visualViewport.removeEventListener("resize", handleViewportChange)
+      visualViewport.removeEventListener("scroll", handleViewportChange)
     }
   }, [handleViewportChange])
 

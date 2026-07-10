@@ -53,6 +53,20 @@ export function clearAuth(): void {
   window.dispatchEvent(new Event(AUTH_EVENT))
 }
 
+/**
+ * Sign out: stop Google from auto-selecting the account on the next visit,
+ * then clear local session state. Shared by the header menu and mobile menu.
+ */
+export function signOut(): void {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    ;(window as any).google?.accounts?.id?.disableAutoSelect()
+  } catch {
+    // ignore
+  }
+  clearAuth()
+}
+
 /** Subscribe to sign-in / sign-out; returns an unsubscribe function. */
 export function onAuthChange(callback: () => void): () => void {
   window.addEventListener(AUTH_EVENT, callback)

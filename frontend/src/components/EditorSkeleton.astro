@@ -1,0 +1,27 @@
+---
+/**
+ * Placeholder shown while the editor/viewer island hydrates. Mimics the
+ * editor layout (toolbar strip + text lines) so the swap to the real
+ * component doesn't jump.
+ */
+---
+
+<div class="flex h-full animate-pulse flex-col" aria-hidden="true">
+  <div class="flex h-11 items-center gap-2 border-b px-3">
+    <div class="bg-muted size-6 rounded"></div>
+    <div class="bg-muted size-6 rounded"></div>
+    <div class="bg-muted mx-1 h-5 w-px"></div>
+    <div class="bg-muted size-6 rounded"></div>
+    <div class="bg-muted size-6 rounded"></div>
+    <div class="bg-muted size-6 rounded"></div>
+    <div class="ml-auto">
+      <div class="bg-muted h-7 w-14 rounded-full"></div>
+    </div>
+  </div>
+  <div class="mx-auto w-full max-w-[648px] space-y-3 px-6 py-8 sm:px-12">
+    <div class="bg-muted h-4 w-2/5 rounded"></div>
+    <div class="bg-muted h-4 w-4/5 rounded"></div>
+    <div class="bg-muted h-4 w-3/5 rounded"></div>
+  </div>
+  <span class="sr-only">Loading editor</span>
+</div>

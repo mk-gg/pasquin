@@ -1,8 +1,9 @@
 /**
  * Local registry of notes this browser created: slug -> edit key + display
  * metadata. This is what makes /n/{slug} open in edit mode and what the
- * sidebar lists. Clearing site data loses the keys (the notes survive on the
- * server); account sync can back this up later.
+ * sidebar lists. For anonymous users, clearing site data loses the keys (the
+ * notes survive on the server); signed-in users have the registry mirrored to
+ * their account and restored on sign-in.
  */
 
 import {

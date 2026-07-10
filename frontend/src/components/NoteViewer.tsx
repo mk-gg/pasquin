@@ -327,7 +327,7 @@ export function NoteViewer() {
   // sidebar; saving redirects to the created note.
   if (!slug) {
     return (
-      <div className="h-[70vh] overflow-hidden rounded-lg border">
+      <div className="h-[70dvh] overflow-hidden rounded-lg border">
         <SimpleEditor leadingButton={<NotesSidebar />} />
       </div>
     )
@@ -350,7 +350,7 @@ export function NoteViewer() {
           {!isOwner && <NoteViewerActions slug={slug} />}
         </div>
       )}
-      <div className="h-[70vh] overflow-hidden rounded-lg border">
+      <div className="h-[70dvh] overflow-hidden rounded-lg border">
         {status === "loading" && (
           <CenteredMessage>
             <LoaderCircle className="size-6 animate-spin" />

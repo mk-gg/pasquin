@@ -1,4 +1,5 @@
 ---
+import EditorSkeleton from '@/components/EditorSkeleton.astro'
 import NoteViewer from '@/components/NoteViewer.tsx'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
@@ -8,11 +9,8 @@ import Layout from '@/layouts/Layout.astro'
   <PageHead slot="head" title="note" />
 
   <NoteViewer client:only="react">
-    <div
-      slot="fallback"
-      class="text-muted-foreground flex h-[70vh] items-center justify-center text-sm"
-    >
-      Loading note&hellip;
+    <div slot="fallback" class="h-[70dvh] overflow-hidden rounded-lg border">
+      <EditorSkeleton />
     </div>
   </NoteViewer>
 </Layout>
