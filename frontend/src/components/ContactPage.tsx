@@ -131,9 +131,9 @@ export function ContactPage() {
       <aside className="flex flex-col gap-3">
         <h2 className="text-sm font-medium">Other links</h2>
         <Button variant="outline" className="justify-start" asChild>
-          <a href="mailto:hello@placeholder.com">
+          <a href="mailto:hello@pasquin.mkgg.dev">
             <Mail />
-            hello@placeholder.com
+            hello@pasquin.mkgg.dev
           </a>
         </Button>
         <Button variant="outline" className="justify-start" asChild>

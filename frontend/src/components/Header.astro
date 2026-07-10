@@ -2,8 +2,11 @@
 import AuthButton from '@/components/AuthButton'
 import Link from '@/components/Link.astro'
 import ThemeToggle from '@/components/ThemeToggle.astro'
+import { buttonVariants } from '@/components/ui/button'
 import MobileMenu from '@/components/ui/mobile-menu'
 import { NAV_LINKS, SITE } from '@/consts'
+import { cn } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import logo from '../../public/static/logo.svg'
 ---
@@ -31,6 +34,16 @@ import logo from '../../public/static/logo.svg'
           ))
         }
       </nav>
+      <Link
+        href="/n"
+        class={cn(
+          buttonVariants({ variant: 'ghost', size: 'sm' }),
+          'gap-1.5 px-2 sm:px-3',
+        )}
+      >
+        <Icon name="lucide:square-pen" class="size-4" />
+        <span class="hidden sm:inline">Open Notepad</span>
+      </Link>
       <MobileMenu client:load transition:persist />
       <ThemeToggle transition:persist />
       <AuthButton client:only="react" />

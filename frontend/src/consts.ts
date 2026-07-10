@@ -4,7 +4,7 @@ export const SITE: Site = {
   title: 'Pasquin',
   description:
     'Anonymous notes, shared instantly.',
-  href: 'https://notes.mkgg.dev',
+  href: 'https://pasquin.mkgg.dev',
   author: 'mk-gg',
   locale: 'en-US',
   featuredPostCount: 2,
@@ -28,7 +28,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
     label: 'GitHub',
   },
   {
-    href: 'mailto:jason@enscribe.dev',
+    href: 'mailto:hello@pasquin.mkgg.dev',
     label: 'Email',
   },
   {

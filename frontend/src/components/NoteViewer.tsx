@@ -7,7 +7,15 @@ import { TextAlign } from "@tiptap/extension-text-align"
 import { Typography } from "@tiptap/extension-typography"
 import { Highlight } from "@tiptap/extension-highlight"
 import { Color, TextStyle } from "@tiptap/extension-text-style"
-import { FileQuestion, LoaderCircle, Lock, Timer, X } from "lucide-react"
+import {
+  FileQuestion,
+  LoaderCircle,
+  Lock,
+  LogIn,
+  SquarePen,
+  Timer,
+  X,
+} from "lucide-react"
 import { toast } from "sonner"
 
 import { HorizontalRule } from "@/components/tiptap-node/horizontal-rule-node/horizontal-rule-node-extension"
@@ -21,6 +29,7 @@ import "@/components/tiptap-node/paragraph-node/paragraph-node.scss"
 import "@/components/tiptap-templates/simple/simple-editor.scss"
 
 import { ApiError, getNote, unlockNote, updateNote, type NoteResult } from "@/lib/api"
+import { requestSignIn, useAuth } from "@/lib/auth"
 import { adoptNote, dismissKeyBanner, getMyNote, type MyNote } from "@/lib/my-notes"
 import { KeyField } from "@/components/KeyField"
 import { NoteInfoPopover } from "@/components/NoteInfo"
@@ -243,6 +252,7 @@ function PasswordGate({
 }
 
 export function NoteViewer() {
+  const { signedIn } = useAuth()
   const [note, setNote] = useState<NoteResult | null>(null)
   const [status, setStatus] = useState<"loading" | "notFound" | "locked" | "ready">(
     "loading"
@@ -354,6 +364,20 @@ export function NoteViewer() {
               Note not found
             </span>
             This note may have expired or the link is incorrect.
+            <div className="mt-2 flex items-center gap-2">
+              <Button size="sm" asChild>
+                <a href="/n">
+                  <SquarePen />
+                  New Note
+                </a>
+              </Button>
+              {!signedIn && (
+                <Button variant="outline" size="sm" onClick={requestSignIn}>
+                  <LogIn />
+                  Sign In
+                </Button>
+              )}
+            </div>
           </CenteredMessage>
         )}
         {status === "locked" && (

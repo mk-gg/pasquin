@@ -72,3 +72,18 @@ export function useAuth(): { user: AuthUser | null; signedIn: boolean } {
   }, [])
   return { user, signedIn: user !== null }
 }
+
+// The sign-in dialog is hosted once (in the header island); any other island
+// can open it by dispatching this event.
+const SIGNIN_REQUEST_EVENT = 'pasquin-signin-request'
+
+/** Opens the sign-in dialog from anywhere in the app. */
+export function requestSignIn(): void {
+  window.dispatchEvent(new Event(SIGNIN_REQUEST_EVENT))
+}
+
+/** Subscribe to sign-in requests; returns an unsubscribe function. */
+export function onSignInRequest(callback: () => void): () => void {
+  window.addEventListener(SIGNIN_REQUEST_EVENT, callback)
+  return () => window.removeEventListener(SIGNIN_REQUEST_EVENT, callback)
+}

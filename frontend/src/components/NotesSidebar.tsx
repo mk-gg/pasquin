@@ -5,10 +5,12 @@ import {
   PanelLeft,
   SquarePenIcon,
   Search,
+  LogIn,
 } from "lucide-react"
 import { toast } from "sonner"
 
 import { ApiError, deleteNote, updateNote } from "@/lib/api"
+import { requestSignIn, useAuth } from "@/lib/auth"
 import {
   listMyNotes,
   removeMyNote,
@@ -64,6 +66,7 @@ function relativeTime(iso: string): string {
 }
 
 export function NotesSidebar({ currentSlug }: { currentSlug?: string }) {
+  const { signedIn } = useAuth()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const [notes, setNotes] = useState<MyNote[]>([])
@@ -239,7 +242,23 @@ export function NotesSidebar({ currentSlug }: { currentSlug?: string }) {
 
           <div className="mt-auto">
             <Separator />
-            <div className="flex items-center justify-end p-2">
+            <div className="flex items-center justify-between p-2">
+              {signedIn ? (
+                <span />
+              ) : (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setOpen(false)
+                    requestSignIn()
+                  }}
+                >
+                  <LogIn />
+                  Sign In
+                </Button>
+              )}
+
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
                   <TooltipTrigger asChild>
