@@ -32,6 +32,7 @@ jobs:
         working-directory: frontend
         env:
           PUBLIC_API_URL: ${{ vars.PUBLIC_API_URL }}
+          PUBLIC_GOOGLE_CLIENT_ID: ${{ vars.PUBLIC_GOOGLE_CLIENT_ID }}
         run: npm run build
 
       - name: Configure AWS credentials (OIDC)
