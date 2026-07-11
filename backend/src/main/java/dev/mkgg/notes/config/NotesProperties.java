@@ -10,9 +10,19 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @param aws names of the AWS resources used by the {@code aws} profile
  * @param rateLimit per-client request limits for abuse-prone endpoints
  * @param auth Google sign-in and session-token settings
+ * @param limits request-size limits guarding memory and storage
  */
 @ConfigurationProperties(prefix = "notes")
-public record NotesProperties(Cors cors, Aws aws, RateLimit rateLimit, Auth auth) {
+public record NotesProperties(Cors cors, Aws aws, RateLimit rateLimit, Auth auth, Limits limits) {
+
+  /**
+   * Request-size limits.
+   *
+   * @param maxRequestBytes largest accepted request body, by {@code Content-Length}. Caps note
+   *     content and account-sync payloads so an oversized body is rejected before it is buffered
+   *     and parsed into memory.
+   */
+  public record Limits(long maxRequestBytes) {}
 
   /**
    * Authentication settings.

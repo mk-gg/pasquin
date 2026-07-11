@@ -18,7 +18,8 @@ class JwtServiceTest {
         new NotesProperties.Cors(List.of()),
         new NotesProperties.Aws("r", "t", "b", "s", "u"),
         new NotesProperties.RateLimit(1, 1, 1, 1, 1),
-        new NotesProperties.Auth("client-id", secret));
+        new NotesProperties.Auth("client-id", secret),
+        new NotesProperties.Limits(5_242_880));
   }
 
   @Test
