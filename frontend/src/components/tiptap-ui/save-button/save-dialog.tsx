@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { navigate } from "astro:transitions/client"
 import { type Editor } from "@tiptap/react"
 import { Info, TriangleAlert } from "lucide-react"
 import { toast } from "sonner"
@@ -97,9 +98,9 @@ export function SaveNoteDialog({
         createdAt: new Date().toISOString(),
         expiresAt: created.expiresAt,
       })
-      // Clear the editor before removing the stored draft: the editor's
-      // beforeunload flush re-saves the current doc during the redirect,
-      // so an unclear editor would resurrect the draft we just removed.
+      // Clear the editor before removing the stored draft: any draft flush
+      // that runs mid-navigation would otherwise re-save the doc and
+      // resurrect the draft we just removed.
       editor.commands.clearContent()
       try {
         localStorage.removeItem(DRAFT_STORAGE_KEY)
@@ -107,7 +108,7 @@ export function SaveNoteDialog({
         // non-fatal
       }
       toast.success("Note saved!")
-      window.location.assign(`/n/${created.slug}`)
+      await navigate(`/n/${created.slug}`)
     } catch (e) {
       setError(e instanceof ApiError ? e.message : "Something went wrong. Please try again.")
       setSaving(false)

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { navigate } from "astro:transitions/client"
 import QRCode from "qrcode"
 import { Copy, EllipsisVertical, Mail, TriangleAlert } from "lucide-react"
 import { toast } from "sonner"
@@ -392,7 +393,7 @@ function DeleteDialog({
       await deleteNote(mine.slug, mine.editKey)
       removeMyNote(mine.slug)
       toast.success("Note deleted")
-      window.location.assign("/n")
+      await navigate("/n")
     } catch (e) {
       toast.error(e instanceof ApiError ? e.message : "Failed to delete note")
       setBusy(false)

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react"
+import { navigate } from "astro:transitions/client"
 import {
   CircleHelp,
   MoreHorizontal,
@@ -127,7 +128,7 @@ export function NotesSidebar({ currentSlug }: { currentSlug?: string }) {
       toast.success("Note deleted")
       const wasCurrent = deleting.slug === currentSlug
       setDeleting(null)
-      if (wasCurrent) window.location.assign("/n")
+      if (wasCurrent) await navigate("/n")
     } catch (e) {
       toast.error(e instanceof ApiError ? e.message : "Failed to delete note")
     } finally {
