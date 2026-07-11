@@ -1,5 +1,7 @@
 package dev.mkgg.notes.common;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import dev.mkgg.notes.config.NotesProperties;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
@@ -9,8 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -20,6 +20,10 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * Per-client-IP token-bucket rate limiting for the abuse-prone endpoints: note creation and
  * password unlock attempts. Buckets are in-memory, which is sufficient for a single instance;
  * switch to a distributed store if the API ever scales horizontally.
+ *
+ * <p>Buckets live in a bounded, self-expiring cache so a flood of distinct client IPs cannot grow
+ * the map without limit and exhaust heap. Idle buckets are evicted after they would have refilled
+ * anyway, so eviction never lets an abuser off early.
  */
 @Component
 public class RateLimitFilter extends OncePerRequestFilter {
@@ -29,8 +33,14 @@ public class RateLimitFilter extends OncePerRequestFilter {
   private static final Pattern SUBMIT_PATH = Pattern.compile("^/api/(contact|reports)/?$");
   private static final String CREATE_PATH = "/api/notes";
 
+  // Cap the number of tracked clients; longest bucket window is one hour, so an
+  // idle bucket has fully refilled by the time it is evicted.
+  private static final long MAX_TRACKED_CLIENTS = 100_000;
+  private static final Duration BUCKET_TTL = Duration.ofHours(1);
+
   private final NotesProperties properties;
-  private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
+  private final Cache<String, Bucket> buckets =
+      Caffeine.newBuilder().maximumSize(MAX_TRACKED_CLIENTS).expireAfterAccess(BUCKET_TTL).build();
 
   public RateLimitFilter(NotesProperties properties) {
     this.properties = properties;
@@ -54,24 +64,24 @@ public class RateLimitFilter extends OncePerRequestFilter {
     String ip = clientIp(request, properties.rateLimit().trustedProxyHops());
     if ("POST".equals(method)) {
       if (CREATE_PATH.equals(path) || (CREATE_PATH + "/").equals(path)) {
-        return buckets.computeIfAbsent(
+        return buckets.get(
             "create:" + ip,
             key -> newBucket(properties.rateLimit().createPerHour(), Duration.ofHours(1)));
       }
       if (UNLOCK_PATH.matcher(path).matches()) {
-        return buckets.computeIfAbsent(
+        return buckets.get(
             "unlock:" + ip,
             key -> newBucket(properties.rateLimit().unlockPerMinute(), Duration.ofMinutes(1)));
       }
       if (SUBMIT_PATH.matcher(path).matches()) {
-        return buckets.computeIfAbsent(
+        return buckets.get(
             "submit:" + ip,
             key -> newBucket(properties.rateLimit().submitPerHour(), Duration.ofHours(1)));
       }
       return null;
     }
     if (("PUT".equals(method) || "DELETE".equals(method)) && NOTE_PATH.matcher(path).matches()) {
-      return buckets.computeIfAbsent(
+      return buckets.get(
           "mutate:" + ip,
           key -> newBucket(properties.rateLimit().mutatePerMinute(), Duration.ofMinutes(1)));
     }

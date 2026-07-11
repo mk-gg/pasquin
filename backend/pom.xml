@@ -62,6 +62,12 @@
             <artifactId>bucket4j-core</artifactId>
             <version>8.10.1</version>
         </dependency>
+        <!-- Bounded, self-expiring cache for the per-IP rate-limit buckets -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>3.2.0</version>
+        </dependency>
 
         <!-- JWT: verify Google ID tokens (JWKS) and issue our own session tokens -->
         <dependency>
