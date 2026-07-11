@@ -1,10 +1,10 @@
-# Security headers for the delivered site: HSTS/nosniff/frame-deny/referrer are
-# enforced immediately (they cannot break the app), while the Content-Security-
-# Policy ships in REPORT-ONLY mode so violations can be observed in the browser
-# console against the live site before it is enforced.
+# Security headers for the delivered site: HSTS, nosniff, frame-deny, a strict
+# referrer policy, and an enforced Content-Security-Policy.
 #
-# To enforce the CSP once the console is clean: rename the custom header below
-# from "Content-Security-Policy-Report-Only" to "Content-Security-Policy".
+# The CSP was validated in report-only mode against the live site (clean
+# console after fixing the Astro view-transition data: script) before being
+# enforced here. To debug a future violation without breaking users, temporarily
+# rename the custom header below to "Content-Security-Policy-Report-Only".
 
 locals {
   # connect-src must list every origin the browser makes fetch/XHR/WebSocket
@@ -65,7 +65,7 @@ resource "aws_cloudfront_response_headers_policy" "site" {
 
   custom_headers_config {
     items {
-      header   = "Content-Security-Policy-Report-Only"
+      header   = "Content-Security-Policy"
       value    = local.csp
       override = true
     }
