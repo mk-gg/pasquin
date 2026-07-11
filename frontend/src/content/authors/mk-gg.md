@@ -6,5 +6,5 @@ bio: 'Hmmmmmmmm...'
 website: 'https://mkgg.dev'
 instagram: 'https://www.instagram.com/not.mkgg/'
 github: 'https://github.com/mk-gg'
-mail: 'markgregory@gmail.com'
+mail: 'hello@mkgg.dev'
 ---
