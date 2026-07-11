@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react"
-import { LogIn, LogOut } from "lucide-react"
+import { LogIn, LogOut, Sparkles } from "lucide-react"
 import { toast } from "sonner"
 
-import { onSignInRequest, signOut, useAuth } from "@/lib/auth"
+import { getMe } from "@/lib/api"
+import {
+  getToken,
+  onSignInRequest,
+  signOut,
+  updateStoredUser,
+  useAuth,
+} from "@/lib/auth"
 import { SignInDialog } from "@/components/SignInDialog"
 import { UserAvatar } from "@/components/UserAvatar"
 import { Button } from "@/components/ui/button"
@@ -29,6 +36,32 @@ export function AuthButton() {
   const [signInOpen, setSignInOpen] = useState(false)
 
   useEffect(() => onSignInRequest(() => setSignInOpen(true)), [])
+
+  // Returning from a Polar checkout: the webhook flips premium server-side,
+  // so refresh the stored profile and let the user know.
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get("checkout") !== "success") return
+    params.delete("checkout")
+    const query = params.toString()
+    window.history.replaceState(
+      null,
+      "",
+      window.location.pathname + (query ? `?${query}` : "")
+    )
+    const token = getToken()
+    if (!token) return
+    getMe(token)
+      .then((me) => {
+        updateStoredUser({ premium: me.premium })
+        if (me.premium) {
+          toast.success("Premium unlocked — you can now add images to notes!")
+        }
+      })
+      .catch(() => {
+        // The webhook may still be in flight; premium will show on next sign-in.
+      })
+  }, [])
 
   // Close the dialog automatically once sign-in completes.
   useEffect(() => {
@@ -63,6 +96,12 @@ export function AuthButton() {
                 <div className="text-muted-foreground max-w-52 truncate text-xs">
                   {user.email}
                 </div>
+                {user.premium && (
+                  <div className="mt-1 flex items-center gap-1 text-xs font-medium text-amber-600 dark:text-amber-400">
+                    <Sparkles className="size-3" />
+                    Premium
+                  </div>
+                )}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onSelect={handleSignOut}>

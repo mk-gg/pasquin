@@ -34,10 +34,14 @@ public class AuthService {
             .findById(google.sub())
             .map(existing -> existing.withProfile(google.email(), google.name()))
             .orElseGet(
-                () -> new User(google.sub(), google.email(), google.name(), false, List.of()));
+                () -> new User(google.sub(), google.email(), google.name(), false, 0, List.of()));
     userRepository.save(user);
     String token = jwtService.issue(user.id(), user.email());
     return new AuthResponse(token, user.email(), user.name(), google.picture(), user.premium());
+  }
+
+  public User getUser(String userId) {
+    return requireUser(userId);
   }
 
   public List<OwnedNote> getNotes(String userId) {

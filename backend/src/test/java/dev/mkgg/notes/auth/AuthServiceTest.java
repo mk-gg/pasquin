@@ -24,7 +24,8 @@ class AuthServiceTest {
         new NotesProperties.Auth("client-id", "secret-that-is-at-least-32-bytes-long!!"),
         new NotesProperties.Limits(5_242_880),
         new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"),
-        new NotesProperties.Polar(false, "https://sandbox-api.polar.sh", "", "", "", ""));
+        new NotesProperties.Polar(false, "https://sandbox-api.polar.sh", "", "", "", ""),
+        new NotesProperties.Images(5_242_880, 104_857_600, ""));
   }
 
   private static OwnedNote note(String slug, String title) {
@@ -37,7 +38,7 @@ class AuthServiceTest {
     users = new InMemoryUserRepository();
     authService =
         new AuthService(new GoogleTokenVerifier(properties), new JwtService(properties), users);
-    users.save(new User("u1", "ada@example.com", "Ada", false, List.of()));
+    users.save(new User("u1", "ada@example.com", "Ada", false, 0, List.of()));
   }
 
   @Test

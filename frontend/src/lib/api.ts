@@ -146,6 +146,13 @@ export interface AuthResult {
   email: string
   name: string | null
   picture: string | null
+  premium: boolean
+}
+
+export interface MeResult {
+  email: string
+  name: string | null
+  premium: boolean
 }
 
 /** A note owned by the signed-in account (server-synced form of a local note). */
@@ -166,6 +173,29 @@ export function signInWithGoogle(idToken: string): Promise<AuthResult> {
 
 function authed(token: string): RequestInit {
   return { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` } }
+}
+
+export function getMe(token: string): Promise<MeResult> {
+  return request('/api/auth/me', authed(token))
+}
+
+// --- Premium (Polar checkout + image uploads) ---
+
+/** Creates a Polar checkout session; redirect the browser to the returned URL. */
+export function createCheckout(token: string): Promise<{ url: string }> {
+  return request('/api/billing/checkout', { method: 'POST', ...authed(token) })
+}
+
+/** Uploads a premium note image; returns the URL to embed in the document. */
+export function uploadImage(token: string, file: File): Promise<{ url: string }> {
+  return request('/api/images', {
+    method: 'POST',
+    headers: {
+      'Content-Type': file.type || 'image/png',
+      Authorization: `Bearer ${token}`,
+    },
+    body: file,
+  })
 }
 
 export function getAccountNotes(token: string): Promise<AccountNote[]> {

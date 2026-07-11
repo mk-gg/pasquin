@@ -27,13 +27,14 @@ class BillingServiceTest {
         new NotesProperties.Limits(5_242_880),
         new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"),
         new NotesProperties.Polar(
-            enabled, "https://sandbox-api.polar.sh", "token", "whsec", "prod-1", "https://x/ok"));
+            enabled, "https://sandbox-api.polar.sh", "token", "whsec", "prod-1", "https://x/ok"),
+        new NotesProperties.Images(5_242_880, 104_857_600, ""));
   }
 
   @BeforeEach
   void setUp() {
     users = new InMemoryUserRepository();
-    users.save(new User("u1", "ada@example.com", "Ada", false, List.of()));
+    users.save(new User("u1", "ada@example.com", "Ada", false, 0, List.of()));
     PolarClient fakeClient =
         (userId, email) -> {
           checkoutRequestedFor = userId + ":" + email;

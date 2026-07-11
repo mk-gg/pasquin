@@ -14,6 +14,7 @@ public class UserItem {
   private String email;
   private String name;
   private Boolean premium;
+  private Long imageBytes;
   private List<OwnedNoteItem> notes;
 
   public static UserItem fromDomain(User user) {
@@ -22,6 +23,7 @@ public class UserItem {
     item.setEmail(user.email());
     item.setName(user.name());
     item.setPremium(user.premium() ? Boolean.TRUE : null);
+    item.setImageBytes(user.imageBytes() > 0 ? user.imageBytes() : null);
     item.setNotes(user.notes().stream().map(OwnedNoteItem::fromDomain).toList());
     return item;
   }
@@ -33,6 +35,7 @@ public class UserItem {
         email,
         name,
         Boolean.TRUE.equals(premium),
+        imageBytes == null ? 0 : imageBytes,
         source.stream().map(OwnedNoteItem::toDomain).toList());
   }
 
@@ -71,6 +74,15 @@ public class UserItem {
 
   public void setPremium(Boolean premium) {
     this.premium = premium;
+  }
+
+  @DynamoDbAttribute("imageBytes")
+  public Long getImageBytes() {
+    return imageBytes;
+  }
+
+  public void setImageBytes(Long imageBytes) {
+    this.imageBytes = imageBytes;
   }
 
   @DynamoDbAttribute("notes")

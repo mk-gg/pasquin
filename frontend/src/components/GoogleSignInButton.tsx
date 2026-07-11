@@ -78,6 +78,7 @@ export function GoogleSignInButton({ onSuccess }: { onSuccess?: () => void }) {
                 email: result.email,
                 name: result.name,
                 picture: result.picture,
+                premium: result.premium,
               })
               await syncOnSignIn()
               toast.success(`Signed in as ${result.email}`)

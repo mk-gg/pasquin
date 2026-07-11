@@ -98,7 +98,10 @@ resource "aws_apprunner_service" "backend" {
           NOTES_POLAR_WEBHOOKSECRET = var.polar_webhook_secret
           NOTES_POLAR_PRODUCTID     = var.polar_product_id
           NOTES_POLAR_SUCCESSURL    = "https://${var.domain_name}/?checkout=success"
-          JWT_SECRET                = random_password.jwt_secret.result
+          # Premium images are served same-origin via the CloudFront
+          # images/* behavior; the object key is appended to this base.
+          NOTES_IMAGES_PUBLICBASEURL = "https://${var.domain_name}"
+          JWT_SECRET                 = random_password.jwt_secret.result
           # Cap heap so the JVM leaves room for AWS SDK metaspace/threads
           # inside the container's memory limit.
           JAVA_OPTS = "-XX:MaxRAMPercentage=70.0"

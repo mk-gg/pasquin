@@ -85,6 +85,14 @@ resource "aws_cloudfront_distribution" "site" {
     origin_access_control_id = aws_cloudfront_origin_access_control.site.id
   }
 
+  # Premium note images live in the content bucket under images/ and are
+  # served from the site domain (same-origin keeps the CSP img-src simple).
+  origin {
+    domain_name              = aws_s3_bucket.content.bucket_regional_domain_name
+    origin_id                = "content-s3"
+    origin_access_control_id = aws_cloudfront_origin_access_control.site.id
+  }
+
   default_cache_behavior {
     target_origin_id       = "site-s3"
     viewer_protocol_policy = "redirect-to-https"
@@ -100,6 +108,19 @@ resource "aws_cloudfront_distribution" "site" {
       event_type   = "viewer-request"
       function_arn = aws_cloudfront_function.rewrite.arn
     }
+  }
+
+  # Uploaded images: immutable objects under random keys, cache hard.
+  ordered_cache_behavior {
+    path_pattern           = "images/*"
+    target_origin_id       = "content-s3"
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    compress               = true
+
+    # AWS managed policy: CachingOptimized
+    cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6"
   }
 
   custom_error_response {

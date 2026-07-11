@@ -49,6 +49,7 @@ import {
 } from "@/components/tiptap-ui/link-popover"
 import { ColorTextPopover } from "@/components/tiptap-ui/color-text-popover"
 import { MarkButton } from "@/components/tiptap-ui/mark-button"
+import { PremiumImageButton } from "@/components/tiptap-ui/premium-image-button"
 import { SaveButton } from "@/components/tiptap-ui/save-button"
 import { UndoRedoButton } from "@/components/tiptap-ui/undo-redo-button"
 
@@ -126,6 +127,7 @@ const MainToolbarContent = ({
           />
           <BlockquoteButton />
           <CodeBlockButton />
+          <PremiumImageButton />
         </ToolbarGroup>
 
         <Spacer />

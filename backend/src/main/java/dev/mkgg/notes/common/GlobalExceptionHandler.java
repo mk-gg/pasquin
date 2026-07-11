@@ -29,6 +29,16 @@ public class GlobalExceptionHandler {
     return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
   }
 
+  @ExceptionHandler(dev.mkgg.notes.image.PremiumRequiredException.class)
+  public ProblemDetail handlePremiumRequired(dev.mkgg.notes.image.PremiumRequiredException e) {
+    return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
+  }
+
+  @ExceptionHandler(dev.mkgg.notes.image.QuotaExceededException.class)
+  public ProblemDetail handleQuotaExceeded(dev.mkgg.notes.image.QuotaExceededException e) {
+    return ProblemDetail.forStatusAndDetail(HttpStatus.PAYLOAD_TOO_LARGE, e.getMessage());
+  }
+
   @ExceptionHandler(dev.mkgg.notes.billing.BillingUnavailableException.class)
   public ProblemDetail handleBillingUnavailable(
       dev.mkgg.notes.billing.BillingUnavailableException e) {

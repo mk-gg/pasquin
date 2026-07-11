@@ -30,6 +30,12 @@ data "aws_iam_policy_document" "backend" {
   }
 
   statement {
+    sid       = "NoteImages"
+    actions   = ["s3:PutObject"]
+    resources = ["${aws_s3_bucket.content.arn}/images/*"]
+  }
+
+  statement {
     sid = "NotesContent"
     actions = [
       "s3:GetObject",

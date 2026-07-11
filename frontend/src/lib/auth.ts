@@ -19,6 +19,7 @@ export interface AuthUser {
   email: string
   name: string | null
   picture: string | null
+  premium?: boolean
 }
 
 export function getToken(): string | null {
@@ -45,6 +46,14 @@ export function isSignedIn(): boolean {
 export function setAuth(token: string, user: AuthUser): void {
   localStorage.setItem(TOKEN_KEY, token)
   localStorage.setItem(USER_KEY, JSON.stringify(user))
+  window.dispatchEvent(new Event(AUTH_EVENT))
+}
+
+/** Merges fields into the stored user profile (e.g. premium after checkout). */
+export function updateStoredUser(fields: Partial<AuthUser>): void {
+  const user = getUser()
+  if (!user) return
+  localStorage.setItem(USER_KEY, JSON.stringify({ ...user, ...fields }))
   window.dispatchEvent(new Event(AUTH_EVENT))
 }
 

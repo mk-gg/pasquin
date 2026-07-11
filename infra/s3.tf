@@ -27,6 +27,30 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "content" {
   }
 }
 
+# CloudFront may read ONLY the images/ prefix; note bodies under notes/
+# stay reachable exclusively through the backend.
+resource "aws_s3_bucket_policy" "content" {
+  bucket = aws_s3_bucket.content.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "AllowCloudFrontReadImages"
+        Effect    = "Allow"
+        Principal = { Service = "cloudfront.amazonaws.com" }
+        Action    = "s3:GetObject"
+        Resource  = "${aws_s3_bucket.content.arn}/images/*"
+        Condition = {
+          StringEquals = {
+            "AWS:SourceArn" = aws_cloudfront_distribution.site.arn
+          }
+        }
+      }
+    ]
+  })
+}
+
 # Note: when DynamoDB TTL deletes expired metadata, the matching S3 body is
 # orphaned (harmless, pennies). A DynamoDB Streams -> Lambda cleanup can be
 # added later; a blanket lifecycle expiration would delete permanent notes.

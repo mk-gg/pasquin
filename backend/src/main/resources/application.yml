@@ -47,6 +47,12 @@ notes:
     webhook-secret: ""
     product-id: ""
     success-url: http://localhost:4321/?checkout=success
+  images:
+    # 5 MB per image (matches limits.max-request-bytes), 100 MB lifetime per
+    # user. Locally images are returned as data URLs, so no base URL is needed.
+    max-image-bytes: 5242880
+    max-total-bytes-per-user: 104857600
+    public-base-url: ""
   limits:
     # 5 MB: generous for a text note (even with embedded images) while blocking
     # oversized bodies that would otherwise be buffered and parsed into memory.
