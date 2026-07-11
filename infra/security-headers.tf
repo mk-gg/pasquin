@@ -25,7 +25,12 @@ locals {
     "object-src 'none';",
     "frame-ancestors 'none';",
     "form-action 'self';",
-    "script-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/client;",
+    # 'unsafe-inline': Astro emits inline scripts on every page. data:: Astro's
+    # <ClientRouter /> re-executes scripts as data: URIs during view transitions.
+    # Both are needed for the app to run; because 'unsafe-inline' already permits
+    # inline script, adding data: does not widen the attack surface further --
+    # connect-src and frame-ancestors remain the meaningful protections.
+    "script-src 'self' 'unsafe-inline' data: https://accounts.google.com/gsi/client;",
     "style-src 'self' 'unsafe-inline' https://accounts.google.com/gsi/style https://cdn.jsdelivr.net;",
     "img-src 'self' data: https:;",
     "font-src 'self' https://cdn.jsdelivr.net;",
