@@ -89,7 +89,16 @@ resource "aws_apprunner_service" "backend" {
           NOTES_MAIL_ENABLED = "true"
           NOTES_MAIL_FROM    = var.mail_from
           NOTES_MAIL_TO      = var.mail_to
-          JWT_SECRET                 = random_password.jwt_secret.result
+          # Polar billing; enabled only once the secrets are provided via
+          # terraform.tfvars. The webhook URL to register in Polar is
+          # {backend_url}/api/webhooks/polar.
+          NOTES_POLAR_ENABLED       = var.polar_access_token != "" ? "true" : "false"
+          NOTES_POLAR_APIBASE       = var.polar_api_base
+          NOTES_POLAR_ACCESSTOKEN   = var.polar_access_token
+          NOTES_POLAR_WEBHOOKSECRET = var.polar_webhook_secret
+          NOTES_POLAR_PRODUCTID     = var.polar_product_id
+          NOTES_POLAR_SUCCESSURL    = "https://${var.domain_name}/?checkout=success"
+          JWT_SECRET                = random_password.jwt_secret.result
           # Cap heap so the JVM leaves room for AWS SDK metaspace/threads
           # inside the container's memory limit.
           JAVA_OPTS = "-XX:MaxRAMPercentage=70.0"

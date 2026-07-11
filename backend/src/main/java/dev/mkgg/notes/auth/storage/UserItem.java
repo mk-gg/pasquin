@@ -13,6 +13,7 @@ public class UserItem {
   private String id;
   private String email;
   private String name;
+  private Boolean premium;
   private List<OwnedNoteItem> notes;
 
   public static UserItem fromDomain(User user) {
@@ -20,13 +21,19 @@ public class UserItem {
     item.setId(user.id());
     item.setEmail(user.email());
     item.setName(user.name());
+    item.setPremium(user.premium() ? Boolean.TRUE : null);
     item.setNotes(user.notes().stream().map(OwnedNoteItem::fromDomain).toList());
     return item;
   }
 
   public User toDomain() {
     List<OwnedNoteItem> source = notes == null ? List.of() : notes;
-    return new User(id, email, name, source.stream().map(OwnedNoteItem::toDomain).toList());
+    return new User(
+        id,
+        email,
+        name,
+        Boolean.TRUE.equals(premium),
+        source.stream().map(OwnedNoteItem::toDomain).toList());
   }
 
   @DynamoDbPartitionKey
@@ -55,6 +62,15 @@ public class UserItem {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  @DynamoDbAttribute("premium")
+  public Boolean getPremium() {
+    return premium;
+  }
+
+  public void setPremium(Boolean premium) {
+    this.premium = premium;
   }
 
   @DynamoDbAttribute("notes")

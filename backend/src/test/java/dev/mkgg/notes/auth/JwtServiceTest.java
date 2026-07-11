@@ -20,7 +20,8 @@ class JwtServiceTest {
         new NotesProperties.RateLimit(1, 1, 1, 1, 1),
         new NotesProperties.Auth("client-id", secret),
         new NotesProperties.Limits(5_242_880),
-        new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"));
+        new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"),
+        new NotesProperties.Polar(false, "https://sandbox-api.polar.sh", "", "", "", ""));
   }
 
   @Test

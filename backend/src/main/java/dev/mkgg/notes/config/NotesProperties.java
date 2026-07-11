@@ -12,10 +12,31 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @param auth Google sign-in and session-token settings
  * @param limits request-size limits guarding memory and storage
  * @param mail SES notification settings for contact/report submissions
+ * @param polar Polar (merchant of record) settings for premium purchases
  */
 @ConfigurationProperties(prefix = "notes")
 public record NotesProperties(
-    Cors cors, Aws aws, RateLimit rateLimit, Auth auth, Limits limits, Mail mail) {
+    Cors cors, Aws aws, RateLimit rateLimit, Auth auth, Limits limits, Mail mail, Polar polar) {
+
+  /**
+   * Polar billing settings. Premium is sold as a one-time purchase; Polar is the merchant of record
+   * and confirms payment via webhook.
+   *
+   * @param enabled whether checkout/webhook endpoints are active
+   * @param apiBase Polar API base URL ({@code https://sandbox-api.polar.sh} or {@code
+   *     https://api.polar.sh})
+   * @param accessToken organization access token used to create checkout sessions
+   * @param webhookSecret Standard-Webhooks signing secret from the Polar webhook endpoint config
+   * @param productId UUID of the premium product in Polar
+   * @param successUrl where Polar redirects the customer after payment
+   */
+  public record Polar(
+      boolean enabled,
+      String apiBase,
+      String accessToken,
+      String webhookSecret,
+      String productId,
+      String successUrl) {}
 
   /**
    * Submission notification emails, sent via SES under the {@code aws} profile.

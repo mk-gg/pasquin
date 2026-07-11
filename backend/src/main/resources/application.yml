@@ -38,6 +38,15 @@ notes:
     enabled: false
     from: noreply@mkgg.dev
     to: hello@mkgg.dev
+  polar:
+    # Off by default; production enables it via NOTES_POLAR_* env vars once a
+    # Polar product and webhook endpoint exist. Defaults target the sandbox.
+    enabled: false
+    api-base: https://sandbox-api.polar.sh
+    access-token: ""
+    webhook-secret: ""
+    product-id: ""
+    success-url: http://localhost:4321/?checkout=success
   limits:
     # 5 MB: generous for a text note (even with embedded images) while blocking
     # oversized bodies that would otherwise be buffered and parsed into memory.

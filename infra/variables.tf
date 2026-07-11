@@ -46,6 +46,34 @@ variable "mail_to" {
   default     = "hello@mkgg.dev"
 }
 
+# Polar billing (premium purchases). Provide the secrets in a local
+# terraform.tfvars (gitignored); billing stays disabled while they are empty.
+variable "polar_api_base" {
+  description = "Polar API base URL (sandbox by default; switch to https://api.polar.sh to go live)"
+  type        = string
+  default     = "https://sandbox-api.polar.sh"
+}
+
+variable "polar_access_token" {
+  description = "Polar organization access token used to create checkout sessions"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "polar_webhook_secret" {
+  description = "Signing secret of the Polar webhook endpoint"
+  type        = string
+  default     = ""
+  sensitive   = true
+}
+
+variable "polar_product_id" {
+  description = "UUID of the premium product in Polar"
+  type        = string
+  default     = ""
+}
+
 variable "google_client_id" {
   description = "Google OAuth client id (public; the audience for ID tokens)"
   type        = string

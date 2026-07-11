@@ -37,6 +37,8 @@ const { class: className } = Astro.props
       </main>
       <Footer />
     </div>
-    <Toaster client:load />
+    {/* Persist across view transitions so toasts fired right before a
+        navigation (note saved/deleted) survive the page swap. */}
+    <Toaster client:load transition:persist="toaster" />
   </body>
 </html>

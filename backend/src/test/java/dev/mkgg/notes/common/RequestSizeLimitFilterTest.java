@@ -26,7 +26,8 @@ class RequestSizeLimitFilterTest {
             new NotesProperties.RateLimit(2, 2, 2, 2, 1),
             new NotesProperties.Auth("client-id", "test-secret-at-least-32-characters-long"),
             new NotesProperties.Limits(MAX_BYTES),
-            new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"));
+            new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"),
+            new NotesProperties.Polar(false, "https://sandbox-api.polar.sh", "", "", "", ""));
     filter = new RequestSizeLimitFilter(properties);
   }
 

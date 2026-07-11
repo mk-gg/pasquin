@@ -29,6 +29,13 @@ public class GlobalExceptionHandler {
     return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
   }
 
+  @ExceptionHandler(dev.mkgg.notes.billing.BillingUnavailableException.class)
+  public ProblemDetail handleBillingUnavailable(
+      dev.mkgg.notes.billing.BillingUnavailableException e) {
+    return ProblemDetail.forStatusAndDetail(
+        HttpStatus.SERVICE_UNAVAILABLE, "Checkout is unavailable right now. Please try again.");
+  }
+
   @ExceptionHandler(IllegalArgumentException.class)
   public ProblemDetail handleIllegalArgument(IllegalArgumentException e) {
     return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
