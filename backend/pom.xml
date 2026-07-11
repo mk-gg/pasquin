@@ -55,6 +55,11 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>s3</artifactId>
         </dependency>
+        <!-- SES: emails contact/report submissions to the site owner -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>sesv2</artifactId>
+        </dependency>
 
         <!-- Token-bucket rate limiting -->
         <dependency>

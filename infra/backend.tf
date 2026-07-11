@@ -84,6 +84,11 @@ resource "aws_apprunner_service" "backend" {
           NOTES_AWS_SUBMISSIONSTABLE = aws_dynamodb_table.submissions.name
           NOTES_AWS_USERSTABLE       = aws_dynamodb_table.users.name
           GOOGLE_CLIENT_ID           = var.google_client_id
+          # Submission notifications; sends fail (and are logged, not surfaced)
+          # until the SES DKIM records are live at Porkbun.
+          NOTES_MAIL_ENABLED = "true"
+          NOTES_MAIL_FROM    = var.mail_from
+          NOTES_MAIL_TO      = var.mail_to
           JWT_SECRET                 = random_password.jwt_secret.result
           # Cap heap so the JVM leaves room for AWS SDK metaspace/threads
           # inside the container's memory limit.

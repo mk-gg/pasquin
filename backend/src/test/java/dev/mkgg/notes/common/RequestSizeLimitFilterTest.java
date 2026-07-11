@@ -25,7 +25,8 @@ class RequestSizeLimitFilterTest {
                 "us-east-1", "notes", "notes-content", "notes-submissions", "notes-users"),
             new NotesProperties.RateLimit(2, 2, 2, 2, 1),
             new NotesProperties.Auth("client-id", "test-secret-at-least-32-characters-long"),
-            new NotesProperties.Limits(MAX_BYTES));
+            new NotesProperties.Limits(MAX_BYTES),
+            new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"));
     filter = new RequestSizeLimitFilter(properties);
   }
 

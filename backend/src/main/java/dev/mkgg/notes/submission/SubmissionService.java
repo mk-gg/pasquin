@@ -2,22 +2,30 @@ package dev.mkgg.notes.submission;
 
 import dev.mkgg.notes.submission.dto.ContactRequest;
 import dev.mkgg.notes.submission.dto.ReportRequest;
+import dev.mkgg.notes.submission.notify.SubmissionNotifier;
 import dev.mkgg.notes.submission.storage.SubmissionRepository;
 import java.time.Clock;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-/** Persists contact messages and abuse reports. */
+/** Persists contact messages and abuse reports, then notifies the site owner. */
 @Service
 public class SubmissionService {
 
+  private static final Logger log = LoggerFactory.getLogger(SubmissionService.class);
+
   private final SubmissionRepository repository;
+  private final SubmissionNotifier notifier;
   private final Clock clock;
 
-  public SubmissionService(SubmissionRepository repository, Clock clock) {
+  public SubmissionService(
+      SubmissionRepository repository, SubmissionNotifier notifier, Clock clock) {
     this.repository = repository;
+    this.notifier = notifier;
     this.clock = clock;
   }
 
@@ -29,8 +37,7 @@ public class SubmissionService {
     data.put("name", request.name());
     data.put("reason", request.reason());
     data.put("message", request.message());
-    repository.save(
-        new Submission(newId(), SubmissionType.CONTACT, clock.instant(), request.email(), data));
+    store(new Submission(newId(), SubmissionType.CONTACT, clock.instant(), request.email(), data));
   }
 
   public void submitReport(ReportRequest request) {
@@ -42,8 +49,20 @@ public class SubmissionService {
     putIfPresent(data, "details", request.details());
     putIfPresent(data, "links", request.links());
     putIfPresent(data, "noteSlug", request.noteSlug());
-    repository.save(
-        new Submission(newId(), SubmissionType.REPORT, clock.instant(), request.email(), data));
+    store(new Submission(newId(), SubmissionType.REPORT, clock.instant(), request.email(), data));
+  }
+
+  /**
+   * Saves, then notifies. The submission is already stored, so a notification failure is logged
+   * rather than surfaced — the submitter's form must not error over an email hiccup.
+   */
+  private void store(Submission submission) {
+    repository.save(submission);
+    try {
+      notifier.notifyNew(submission);
+    } catch (RuntimeException e) {
+      log.error("Failed to send notification for submission {}", submission.id(), e);
+    }
   }
 
   /** A filled honeypot field means a bot; silently accept without storing. */

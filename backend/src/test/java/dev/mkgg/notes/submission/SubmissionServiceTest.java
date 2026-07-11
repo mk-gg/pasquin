@@ -1,13 +1,17 @@
 package dev.mkgg.notes.submission;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import dev.mkgg.notes.submission.dto.ContactRequest;
 import dev.mkgg.notes.submission.dto.ReportRequest;
+import dev.mkgg.notes.submission.notify.SubmissionNotifier;
 import dev.mkgg.notes.submission.storage.InMemorySubmissionRepository;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,12 +20,14 @@ class SubmissionServiceTest {
   private static final Instant NOW = Instant.parse("2026-07-07T10:00:00Z");
 
   private InMemorySubmissionRepository repository;
+  private RecordingNotifier notifier;
   private SubmissionService service;
 
   @BeforeEach
   void setUp() {
     repository = new InMemorySubmissionRepository();
-    service = new SubmissionService(repository, Clock.fixed(NOW, ZoneOffset.UTC));
+    notifier = new RecordingNotifier();
+    service = new SubmissionService(repository, notifier, Clock.fixed(NOW, ZoneOffset.UTC));
   }
 
   @Test
@@ -56,6 +62,18 @@ class SubmissionServiceTest {
   }
 
   @Test
+  void notifiesForEachStoredSubmission() {
+    service.submitContact(
+        new ContactRequest("Ada", "ada@example.com", "General inquiry", "Hello there", null));
+    service.submitReport(
+        new ReportRequest("Spam", "reporter@example.com", "spammy links", null, "abc123", null));
+
+    assertThat(notifier.notified).hasSize(2);
+    assertThat(notifier.notified.get(0).type()).isEqualTo(SubmissionType.CONTACT);
+    assertThat(notifier.notified.get(1).type()).isEqualTo(SubmissionType.REPORT);
+  }
+
+  @Test
   void honeypotSubmissionsAreDroppedSilently() {
     service.submitContact(
         new ContactRequest("Bot", "bot@example.com", "General inquiry", "spam", "http://spam"));
@@ -63,5 +81,32 @@ class SubmissionServiceTest {
         new ReportRequest("Spam", "bot@example.com", "spam", null, null, "filled"));
 
     assertThat(repository.findAll()).isEmpty();
+    assertThat(notifier.notified).isEmpty();
+  }
+
+  @Test
+  void notificationFailureDoesNotFailTheSubmission() {
+    notifier.failNext = true;
+
+    assertThatCode(
+            () ->
+                service.submitContact(
+                    new ContactRequest("Ada", "ada@example.com", "General inquiry", "Hi", null)))
+        .doesNotThrowAnyException();
+    assertThat(repository.findAll()).hasSize(1);
+  }
+
+  private static final class RecordingNotifier implements SubmissionNotifier {
+    final List<Submission> notified = new ArrayList<>();
+    boolean failNext;
+
+    @Override
+    public void notifyNew(Submission submission) {
+      if (failNext) {
+        failNext = false;
+        throw new IllegalStateException("SES unavailable");
+      }
+      notified.add(submission);
+    }
   }
 }

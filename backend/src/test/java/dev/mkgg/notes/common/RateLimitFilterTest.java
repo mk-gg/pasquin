@@ -23,7 +23,8 @@ class RateLimitFilterTest {
                 "us-east-1", "notes", "notes-content", "notes-submissions", "notes-users"),
             new NotesProperties.RateLimit(2, 2, 2, 2, 1),
             new NotesProperties.Auth("client-id", "test-secret-at-least-32-characters-long"),
-            new NotesProperties.Limits(5_242_880));
+            new NotesProperties.Limits(5_242_880),
+            new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"));
     filter = new RateLimitFilter(properties);
   }
 

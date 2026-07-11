@@ -37,6 +37,20 @@ output "acm_validation_record" {
   }
 }
 
+# CNAMEs to add at Porkbun so SES can DKIM-verify the mail domain. Leave the
+# existing MX (email forwarding) records untouched.
+output "ses_dkim_records" {
+  description = "Add these three CNAMEs at Porkbun to verify the SES mail domain"
+  value = [
+    for token in aws_sesv2_email_identity.mail.dkim_signing_attributes[0].tokens :
+    {
+      name  = "${token}._domainkey.${var.mail_domain}"
+      type  = "CNAME"
+      value = "${token}.dkim.amazonses.com"
+    }
+  ]
+}
+
 output "cloudfront_distribution_id" {
   description = "Use for cache invalidations after a frontend deploy"
   value       = aws_cloudfront_distribution.site.id

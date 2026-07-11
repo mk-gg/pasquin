@@ -28,6 +28,24 @@ variable "domain_name" {
   default     = "pasquin.mkgg.dev"
 }
 
+variable "mail_domain" {
+  description = "Domain verified in SES for sending submission notifications"
+  type        = string
+  default     = "mkgg.dev"
+}
+
+variable "mail_from" {
+  description = "Sender address for submission notifications (any address at mail_domain)"
+  type        = string
+  default     = "noreply@mkgg.dev"
+}
+
+variable "mail_to" {
+  description = "Recipient of submission notifications (forwarded by Porkbun to the owner's inbox)"
+  type        = string
+  default     = "hello@mkgg.dev"
+}
+
 variable "google_client_id" {
   description = "Google OAuth client id (public; the audience for ID tokens)"
   type        = string

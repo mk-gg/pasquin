@@ -22,7 +22,8 @@ class AuthServiceTest {
         new NotesProperties.Aws("r", "t", "b", "s", "u"),
         new NotesProperties.RateLimit(1, 1, 1, 1, 1),
         new NotesProperties.Auth("client-id", "secret-that-is-at-least-32-bytes-long!!"),
-        new NotesProperties.Limits(5_242_880));
+        new NotesProperties.Limits(5_242_880),
+        new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"));
   }
 
   private static OwnedNote note(String slug, String title) {

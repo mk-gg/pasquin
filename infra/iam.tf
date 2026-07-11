@@ -24,6 +24,12 @@ data "aws_iam_policy_document" "backend" {
   }
 
   statement {
+    sid       = "SubmissionNotifications"
+    actions   = ["ses:SendEmail"]
+    resources = [aws_sesv2_email_identity.mail.arn]
+  }
+
+  statement {
     sid = "NotesContent"
     actions = [
       "s3:GetObject",

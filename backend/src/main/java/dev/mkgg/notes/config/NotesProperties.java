@@ -11,9 +11,20 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @param rateLimit per-client request limits for abuse-prone endpoints
  * @param auth Google sign-in and session-token settings
  * @param limits request-size limits guarding memory and storage
+ * @param mail SES notification settings for contact/report submissions
  */
 @ConfigurationProperties(prefix = "notes")
-public record NotesProperties(Cors cors, Aws aws, RateLimit rateLimit, Auth auth, Limits limits) {
+public record NotesProperties(
+    Cors cors, Aws aws, RateLimit rateLimit, Auth auth, Limits limits, Mail mail) {
+
+  /**
+   * Submission notification emails, sent via SES under the {@code aws} profile.
+   *
+   * @param enabled whether to send an email for each stored submission
+   * @param from sender address; its domain must be a verified SES identity
+   * @param to recipient address (the site owner)
+   */
+  public record Mail(boolean enabled, String from, String to) {}
 
   /**
    * Request-size limits.

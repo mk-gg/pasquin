@@ -7,6 +7,7 @@ import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.sesv2.SesV2Client;
 
 /**
  * AWS SDK clients, active only under the {@code aws} profile. Credentials are resolved through the
@@ -29,5 +30,10 @@ public class AwsConfig {
   @Bean
   public S3Client s3Client(NotesProperties properties) {
     return S3Client.builder().region(Region.of(properties.aws().region())).build();
+  }
+
+  @Bean
+  public SesV2Client sesV2Client(NotesProperties properties) {
+    return SesV2Client.builder().region(Region.of(properties.aws().region())).build();
   }
 }
