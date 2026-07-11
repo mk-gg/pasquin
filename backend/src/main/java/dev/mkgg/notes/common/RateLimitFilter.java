@@ -51,7 +51,7 @@ public class RateLimitFilter extends OncePerRequestFilter {
   private Bucket bucketFor(HttpServletRequest request) {
     String method = request.getMethod();
     String path = request.getRequestURI();
-    String ip = clientIp(request);
+    String ip = clientIp(request, properties.rateLimit().trustedProxyHops());
     if ("POST".equals(method)) {
       if (CREATE_PATH.equals(path) || (CREATE_PATH + "/").equals(path)) {
         return buckets.computeIfAbsent(
@@ -84,11 +84,28 @@ public class RateLimitFilter extends OncePerRequestFilter {
         .build();
   }
 
-  /** Uses the first {@code X-Forwarded-For} hop when behind a proxy or CDN. */
-  private static String clientIp(HttpServletRequest request) {
-    String forwarded = request.getHeader("X-Forwarded-For");
-    if (forwarded != null && !forwarded.isBlank()) {
-      return forwarded.split(",")[0].trim();
+  /**
+   * Resolves the client IP for rate-limit keying.
+   *
+   * <p>{@code X-Forwarded-For} is {@code client, proxy1, ..., proxyN}, appended left-to-right, so
+   * only the rightmost {@code trustedHops} entries come from our own infrastructure. Reading the
+   * client IP that many entries from the right ignores any values the client injects on the left —
+   * otherwise an attacker could send a random leading hop per request to get a fresh bucket every
+   * time and defeat the limit entirely (including the unlock brute-force protection).
+   */
+  private static String clientIp(HttpServletRequest request, int trustedHops) {
+    if (trustedHops > 0) {
+      String forwarded = request.getHeader("X-Forwarded-For");
+      if (forwarded != null && !forwarded.isBlank()) {
+        String[] hops = forwarded.split(",");
+        int index = hops.length - trustedHops;
+        if (index >= 0) {
+          String ip = hops[index].trim();
+          if (!ip.isBlank()) {
+            return ip;
+          }
+        }
+      }
     }
     return request.getRemoteAddr();
   }

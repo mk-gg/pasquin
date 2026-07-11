@@ -29,9 +29,18 @@ public record NotesProperties(Cors cors, Aws aws, RateLimit rateLimit, Auth auth
    * @param unlockPerMinute unlock attempts allowed per client IP per minute
    * @param mutatePerMinute updates/deletes allowed per client IP per minute (autosave traffic)
    * @param submitPerHour contact/report submissions allowed per client IP per hour
+   * @param trustedProxyHops number of trusted reverse-proxy hops that append to {@code
+   *     X-Forwarded-For}. The client IP is read this many entries from the right of that header, so
+   *     values a client injects on the left cannot be used to forge a fresh rate-limit bucket. Set
+   *     to the number of proxies in front of the app (App Runner = 1); use 0 for direct exposure
+   *     with no trusted proxy, which falls back to the socket address.
    */
   public record RateLimit(
-      int createPerHour, int unlockPerMinute, int mutatePerMinute, int submitPerHour) {}
+      int createPerHour,
+      int unlockPerMinute,
+      int mutatePerMinute,
+      int submitPerHour,
+      int trustedProxyHops) {}
 
   /**
    * CORS settings.

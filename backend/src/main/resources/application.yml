@@ -14,6 +14,9 @@ notes:
     unlock-per-minute: 10
     mutate-per-minute: 120
     submit-per-hour: 10
+    # App Runner sits in front of the app and appends the real client IP to
+    # X-Forwarded-For, so exactly one hop is trusted. Override per environment.
+    trusted-proxy-hops: 1
   cors:
     allowed-origins:
       - http://localhost:1234

@@ -21,7 +21,7 @@ class RateLimitFilterTest {
             new NotesProperties.Cors(List.of()),
             new NotesProperties.Aws(
                 "us-east-1", "notes", "notes-content", "notes-submissions", "notes-users"),
-            new NotesProperties.RateLimit(2, 2, 2, 2),
+            new NotesProperties.RateLimit(2, 2, 2, 2, 1),
             new NotesProperties.Auth("client-id", "test-secret-at-least-32-characters-long"));
     filter = new RateLimitFilter(properties);
   }
@@ -79,28 +79,30 @@ class RateLimitFilterTest {
     }
   }
 
-  @Test
-  void usesFirstForwardedForHopBehindProxy() throws Exception {
+  private MockHttpServletResponse sendForwarded(String forwardedFor) throws Exception {
     MockHttpServletRequest request = new MockHttpServletRequest("POST", "/api/notes");
     request.setRequestURI("/api/notes");
-    request.addHeader("X-Forwarded-For", "9.9.9.9, 10.0.0.1");
-    request.setRemoteAddr("10.0.0.1");
-    for (int i = 0; i < 2; i++) {
-      MockHttpServletResponse response = new MockHttpServletResponse();
-      MockHttpServletRequest r = new MockHttpServletRequest("POST", "/api/notes");
-      r.setRequestURI("/api/notes");
-      r.addHeader("X-Forwarded-For", "9.9.9.9, 10.0.0.1");
-      r.setRemoteAddr("10.0.0.1");
-      filter.doFilter(r, response, new MockFilterChain());
-      assertThat(response.getStatus()).isEqualTo(200);
-    }
-    // same forwarded IP from a different proxy hop is still the same client
+    request.addHeader("X-Forwarded-For", forwardedFor);
+    request.setRemoteAddr("10.0.0.1"); // App Runner's internal address
     MockHttpServletResponse response = new MockHttpServletResponse();
-    MockHttpServletRequest r = new MockHttpServletRequest("POST", "/api/notes");
-    r.setRequestURI("/api/notes");
-    r.addHeader("X-Forwarded-For", "9.9.9.9, 10.0.0.2");
-    r.setRemoteAddr("10.0.0.2");
-    filter.doFilter(r, response, new MockFilterChain());
-    assertThat(response.getStatus()).isEqualTo(429);
+    filter.doFilter(request, response, new MockFilterChain());
+    return response;
+  }
+
+  @Test
+  void usesTheRealClientIpFromTheTrustedRightmostHop() throws Exception {
+    // App Runner appends the real client IP, so it is the rightmost entry.
+    assertThat(sendForwarded("203.0.113.5").getStatus()).isEqualTo(200);
+    assertThat(sendForwarded("203.0.113.5").getStatus()).isEqualTo(200);
+    assertThat(sendForwarded("203.0.113.5").getStatus()).isEqualTo(429);
+  }
+
+  @Test
+  void spoofedLeadingForwardedForHopsCannotForgeFreshBuckets() throws Exception {
+    // Same real client (rightmost) but a different attacker-chosen leading hop
+    // on every request: all must share one bucket and hit the limit.
+    assertThat(sendForwarded("1.1.1.1, 203.0.113.9").getStatus()).isEqualTo(200);
+    assertThat(sendForwarded("2.2.2.2, 203.0.113.9").getStatus()).isEqualTo(200);
+    assertThat(sendForwarded("3.3.3.3, 203.0.113.9").getStatus()).isEqualTo(429);
   }
 }
