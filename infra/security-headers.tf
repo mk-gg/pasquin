@@ -3,8 +3,11 @@
 #
 # The CSP was validated in report-only mode against the live site (clean
 # console after fixing the Astro view-transition data: script) before being
-# enforced here. To debug a future violation without breaking users, temporarily
-# rename the custom header below to "Content-Security-Policy-Report-Only".
+# enforced here. The enforced policy must live in security_headers_config;
+# CloudFront rejects "Content-Security-Policy" as a custom header. To debug a
+# future violation without breaking users, move the policy back to a
+# custom_headers_config item named "Content-Security-Policy-Report-Only"
+# (report-only has no slot in security_headers_config).
 
 locals {
   # connect-src must list every origin the browser makes fetch/XHR/WebSocket
@@ -61,13 +64,11 @@ resource "aws_cloudfront_response_headers_policy" "site" {
       referrer_policy = "strict-origin-when-cross-origin"
       override        = true
     }
-  }
-
-  custom_headers_config {
-    items {
-      header   = "Content-Security-Policy"
-      value    = local.csp
-      override = true
+    # Content-Security-Policy is a recognized security header and must live here
+    # rather than in custom_headers_config, which CloudFront rejects for it.
+    content_security_policy {
+      content_security_policy = local.csp
+      override                = true
     }
   }
 }
