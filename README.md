@@ -32,23 +32,7 @@
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    User([Browser])
-
-    subgraph AWS
-        CF[CloudFront CDN]
-        SITE[(S3 · static site)]
-        API[App Runner · Spring Boot API]
-        DDB[(DynamoDB · metadata + submissions)]
-        CONTENT[(S3 · note content)]
-    end
-
-    User -->|HTTPS| CF --> SITE
-    User -->|/api · HTTPS| API
-    API --> DDB
-    API --> CONTENT
-```
+![Architecture diagram](docs/architecture.png)
 
 Static frontend served globally from **CloudFront + S3**; a containerized Spring Boot API on **App Runner** persists note metadata to **DynamoDB** and note bodies to **S3**. Everything is defined in Terraform.
 
@@ -81,10 +65,9 @@ There are no user accounts, yet notes are still editable and deletable only by t
 
 1. On save, the server generates a random **128-bit edit key**, returns it **once**, and stores only its **SHA-256 hash**.
 2. Updates and deletes require the key in an `X-Edit-Key` header; a wrong key gets a `403`.
-3. The browser keeps a `slug → key` map in `localStorage` — that map *is* the "My Notes" list.
+3. The browser keeps a `slug → key` map in `localStorage`, that map *is* the "My Notes" list.
 4. Editable share links put the key in the URL **fragment** (`/n/{slug}#key`), which browsers never transmit to a server, so the key stays private even in transit.
 
-This keeps the product frictionless (no login) while still enforcing ownership. Google sign-in — to sync that local key map across devices — is the planned next step.
 
 ## Local development
 
