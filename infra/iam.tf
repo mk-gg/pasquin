@@ -31,8 +31,14 @@ data "aws_iam_policy_document" "backend" {
 
   statement {
     sid       = "NoteImages"
-    actions   = ["s3:PutObject"]
+    actions   = ["s3:PutObject", "s3:DeleteObject"]
     resources = ["${aws_s3_bucket.content.arn}/images/*"]
+  }
+
+  statement {
+    sid       = "TakedownInvalidations"
+    actions   = ["cloudfront:CreateInvalidation"]
+    resources = [aws_cloudfront_distribution.site.arn]
   }
 
   statement {

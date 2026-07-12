@@ -14,6 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @param mail SES notification settings for contact/report submissions
  * @param polar Polar (merchant of record) settings for premium purchases
  * @param images premium image-upload limits and public URL base
+ * @param admin operator (moderation) settings
  */
 @ConfigurationProperties(prefix = "notes")
 public record NotesProperties(
@@ -24,7 +25,8 @@ public record NotesProperties(
     Limits limits,
     Mail mail,
     Polar polar,
-    Images images) {
+    Images images,
+    Admin admin) {
 
   /**
    * Premium image uploads.
@@ -34,8 +36,18 @@ public record NotesProperties(
    * @param maxTotalBytesPerUser per-user lifetime storage quota; caps the S3 bill
    * @param publicBaseUrl URL prefix images are served from (CloudFront path in production); the
    *     stored object key is appended to it
+   * @param distributionId CloudFront distribution to invalidate when a takedown removes images
    */
-  public record Images(long maxImageBytes, long maxTotalBytesPerUser, String publicBaseUrl) {}
+  public record Images(
+      long maxImageBytes, long maxTotalBytesPerUser, String publicBaseUrl, String distributionId) {}
+
+  /**
+   * Operator settings for the admin takedown endpoint.
+   *
+   * @param userId Google account id allowed to call {@code /api/admin/**}; blank disables the
+   *     endpoints entirely
+   */
+  public record Admin(String userId) {}
 
   /**
    * Polar billing settings. Premium is sold as a one-time purchase; Polar is the merchant of record

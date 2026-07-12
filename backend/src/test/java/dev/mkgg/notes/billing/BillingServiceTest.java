@@ -28,7 +28,8 @@ class BillingServiceTest {
         new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"),
         new NotesProperties.Polar(
             enabled, "https://sandbox-api.polar.sh", "token", "whsec", "prod-1", "https://x/ok"),
-        new NotesProperties.Images(5_242_880, 104_857_600, ""));
+        new NotesProperties.Images(5_242_880, 104_857_600, "", ""),
+        new NotesProperties.Admin(""));
   }
 
   @BeforeEach

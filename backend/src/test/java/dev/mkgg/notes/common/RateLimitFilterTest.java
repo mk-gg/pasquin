@@ -26,7 +26,8 @@ class RateLimitFilterTest {
             new NotesProperties.Limits(5_242_880),
             new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"),
             new NotesProperties.Polar(false, "https://sandbox-api.polar.sh", "", "", "", ""),
-            new NotesProperties.Images(5_242_880, 104_857_600, ""));
+            new NotesProperties.Images(5_242_880, 104_857_600, "", ""),
+            new NotesProperties.Admin(""));
     filter = new RateLimitFilter(properties);
   }
 

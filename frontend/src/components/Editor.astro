@@ -3,7 +3,9 @@ import EditorSkeleton from '@/components/EditorSkeleton.astro'
 import { SimpleEditor } from '@/components/tiptap-templates/simple/simple-editor'
 ---
 
-<div class="h-[70dvh] overflow-hidden rounded-lg">
+<!-- Fill the viewport (minus the sticky header and page padding) so the
+     editor feels like the whole screen, with a floor for short windows. -->
+<div class="h-[calc(100dvh-10rem)] min-h-[24rem] overflow-hidden rounded-lg">
   <SimpleEditor client:only="react">
     <EditorSkeleton slot="fallback" />
   </SimpleEditor>

@@ -53,6 +53,11 @@ notes:
     max-image-bytes: 5242880
     max-total-bytes-per-user: 104857600
     public-base-url: ""
+    distribution-id: ""
+  admin:
+    # Google account id (the JWT subject) allowed to call /api/admin/**.
+    # Blank disables the admin endpoints.
+    user-id: ""
   limits:
     # 5 MB: generous for a text note (even with embedded images) while blocking
     # oversized bodies that would otherwise be buffered and parsed into memory.

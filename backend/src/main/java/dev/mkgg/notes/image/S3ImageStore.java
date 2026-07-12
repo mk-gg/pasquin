@@ -37,4 +37,9 @@ public class S3ImageStore implements ImageStore {
         RequestBody.fromBytes(bytes));
     return publicBaseUrl + "/" + key;
   }
+
+  @Override
+  public void delete(String key) {
+    s3.deleteObject(request -> request.bucket(bucket).key(key));
+  }
 }

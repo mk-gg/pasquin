@@ -33,6 +33,11 @@ public class GlobalExceptionHandler {
     return ProblemDetail.forStatusAndDetail(HttpStatus.UNAUTHORIZED, e.getMessage());
   }
 
+  @ExceptionHandler(AccessDeniedException.class)
+  public ProblemDetail handleAccessDenied(AccessDeniedException e) {
+    return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());
+  }
+
   @ExceptionHandler(dev.mkgg.notes.image.PremiumRequiredException.class)
   public ProblemDetail handlePremiumRequired(dev.mkgg.notes.image.PremiumRequiredException e) {
     return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, e.getMessage());

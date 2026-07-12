@@ -60,6 +60,11 @@
             <groupId>software.amazon.awssdk</groupId>
             <artifactId>sesv2</artifactId>
         </dependency>
+        <!-- CloudFront: evicts taken-down images from edge caches -->
+        <dependency>
+            <groupId>software.amazon.awssdk</groupId>
+            <artifactId>cloudfront</artifactId>
+        </dependency>
 
         <!-- Token-bucket rate limiting -->
         <dependency>

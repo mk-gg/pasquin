@@ -31,7 +31,8 @@ class ImageServiceTest {
         new NotesProperties.Limits(5_242_880),
         new NotesProperties.Mail(false, "noreply@example.com", "owner@example.com"),
         new NotesProperties.Polar(false, "https://sandbox-api.polar.sh", "", "", "", ""),
-        new NotesProperties.Images(maxImage, maxTotal, "https://cdn.example"));
+        new NotesProperties.Images(maxImage, maxTotal, "https://cdn.example", ""),
+        new NotesProperties.Admin(""));
   }
 
   @BeforeEach
@@ -40,10 +41,16 @@ class ImageServiceTest {
     users.save(new User("prem", "p@example.com", "Prem", true, 0, List.of()));
     users.save(new User("free", "f@example.com", "Free", false, 0, List.of()));
     ImageStore store =
-        (key, bytes, contentType) -> {
-          storedKey = key;
-          storedContentType = contentType;
-          return "https://cdn.example/" + key;
+        new ImageStore() {
+          @Override
+          public String store(String key, byte[] bytes, String contentType) {
+            storedKey = key;
+            storedContentType = contentType;
+            return "https://cdn.example/" + key;
+          }
+
+          @Override
+          public void delete(String key) {}
         };
     service = new ImageService(store, users, props(1024, 2048));
   }

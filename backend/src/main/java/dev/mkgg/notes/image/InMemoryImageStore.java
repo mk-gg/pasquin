@@ -16,4 +16,9 @@ public class InMemoryImageStore implements ImageStore {
   public String store(String key, byte[] bytes, String contentType) {
     return "data:" + contentType + ";base64," + Base64.getEncoder().encodeToString(bytes);
   }
+
+  @Override
+  public void delete(String key) {
+    // Data URLs live inside the note content; nothing is stored separately.
+  }
 }

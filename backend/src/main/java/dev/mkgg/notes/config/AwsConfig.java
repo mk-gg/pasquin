@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.cloudfront.CloudFrontClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
@@ -35,5 +36,11 @@ public class AwsConfig {
   @Bean
   public SesV2Client sesV2Client(NotesProperties properties) {
     return SesV2Client.builder().region(Region.of(properties.aws().region())).build();
+  }
+
+  @Bean
+  public CloudFrontClient cloudFrontClient() {
+    // CloudFront is a global service; its control-plane endpoint lives in AWS_GLOBAL.
+    return CloudFrontClient.builder().region(Region.AWS_GLOBAL).build();
   }
 }

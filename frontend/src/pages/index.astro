@@ -1,14 +1,58 @@
 ---
+import { Icon } from 'astro-icon/components'
+
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+import Editor from '@/components/Editor.astro'
+import { Badge } from '@/components/ui/badge'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+
 import BlogCard from '@/components/BlogCard.astro'
 import Link from '@/components/Link.astro'
-import PageHead from '@/components/PageHead.astro'
-import { buttonVariants } from '@/components/ui/button'
 import { SITE } from '@/consts'
-import Layout from '@/layouts/Layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
-import Editor from '@/components/Editor.astro'
 
 const blog = await getRecentPosts(SITE.featuredPostCount)
+
+const features = [
+  {
+    icon: 'lucide:pencil-line',
+    title: 'Rich text, zero friction',
+    description:
+      'Headings, lists, code blocks, highlights, and links. Start typing — no account needed.',
+  },
+  {
+    icon: 'lucide:key-round',
+    title: 'Anonymous ownership',
+    description:
+      'Saving returns a one-time edit key that proves the note is yours. The server only ever stores its hash.',
+  },
+  {
+    icon: 'lucide:lock',
+    title: 'Password protection',
+    description:
+      'Lock a note so its title and content stay hidden until a reader enters the password.',
+  },
+  {
+    icon: 'lucide:timer',
+    title: 'Auto-expiry',
+    description:
+      'Set a note to delete itself — anywhere from 1 hour to 1 month after you save it.',
+  },
+  {
+    icon: 'lucide:qr-code',
+    title: 'Share anywhere',
+    description:
+      'Copy a link, send it by email, or hand it to a phone with a generated QR code.',
+  },
+  {
+    icon: 'lucide:image-plus',
+    title: 'Images — premium',
+    description:
+      'A one-time upgrade lets you embed images in notes, stored securely and served from the CDN.',
+  },
+]
 ---
 
 <Layout class="max-w-3xl">
@@ -16,6 +60,68 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
   <section>
     <div class="rounded-lg border">
       <Editor />
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-y-6 py-8">
+    <div class="mx-auto flex max-w-2xl flex-col items-center gap-y-3 text-center">
+      <Badge variant="outline">What is Pasquin?</Badge>
+      <h2 class="text-4xl font-medium max-w-sm mx-auto">Instantly share your notes for free.</h2>
+      <p class="text-muted-foreground">
+        Pasquin is a fast, minimalist online notepad. You can start typing
+        right away, then share your notes instantly through a unique link; no
+        registration required. It supports rich text formatting, offers
+        built-in encryption for privacy, and works seamlessly across all your
+        devices.
+      </p>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        features.map((feature) => (
+          <div class="rounded-xl border p-4">
+            <div class="bg-secondary mb-3 flex size-9 items-center justify-center rounded-lg">
+              <Icon name={feature.icon} class="size-4" />
+            </div>
+            <h3 class="text-sm font-medium">{feature.title}</h3>
+            <p class="text-muted-foreground mt-1 text-sm">
+              {feature.description}
+            </p>
+          </div>
+        ))
+      }
+    </div>
+    <div class="flex justify-center">
+      <a href="/n" class={cn(buttonVariants(), 'group')}>
+        Start writing
+        <Icon
+          name="lucide:arrow-right"
+          class="size-4 transition-transform group-hover:translate-x-0.5"
+        />
+      </a>
+    </div>
+  </section>
+
+  <section class="flex flex-col gap-y-4">
+    <h2 class="text-2xl font-medium">Latest posts</h2>
+    <ul class="flex flex-col gap-y-4">
+      {
+        blog.map((post) => (
+          <li>
+            <BlogCard entry={post} />
+          </li>
+        ))
+      }
+    </ul>
+    <div class="flex justify-center">
+      <Link
+        href="/blog"
+        class={buttonVariants({ variant: 'ghost' }) + ' group'}
+      >
+        See all posts <span
+          class="ml-1.5 transition-transform group-hover:translate-x-1"
+          >&rarr;</span
+        >
+      </Link>
     </div>
   </section>
 </Layout>

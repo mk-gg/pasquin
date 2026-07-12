@@ -11,4 +11,7 @@ public interface ImageStore {
    * @param contentType the detected content type, e.g. {@code image/png}
    */
   String store(String key, byte[] bytes, String contentType);
+
+  /** Removes a stored image (moderation takedowns); missing keys are a no-op. */
+  void delete(String key);
 }

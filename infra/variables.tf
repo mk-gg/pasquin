@@ -74,6 +74,12 @@ variable "polar_product_id" {
   default     = ""
 }
 
+variable "admin_user_id" {
+  description = "Google account id (JWT subject) allowed to call the admin takedown endpoints; blank disables them. Set in terraform.tfvars."
+  type        = string
+  default     = ""
+}
+
 variable "monthly_budget_usd" {
   description = "Monthly cost cap for billing alerts (the $130 credit spread over a year is ~$11/mo)"
   type        = string

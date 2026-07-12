@@ -101,7 +101,11 @@ resource "aws_apprunner_service" "backend" {
           # Premium images are served same-origin via the CloudFront
           # images/* behavior; the object key is appended to this base.
           NOTES_IMAGES_PUBLICBASEURL = "https://${var.domain_name}"
-          JWT_SECRET                 = random_password.jwt_secret.result
+          # Takedowns evict removed images from the CDN edge caches.
+          NOTES_IMAGES_DISTRIBUTIONID = aws_cloudfront_distribution.site.id
+          # Moderation: the one account allowed to call /api/admin/**.
+          NOTES_ADMIN_USERID = var.admin_user_id
+          JWT_SECRET         = random_password.jwt_secret.result
           # Cap heap so the JVM leaves room for AWS SDK metaspace/threads
           # inside the container's memory limit.
           JAVA_OPTS = "-XX:MaxRAMPercentage=70.0"
