@@ -1,5 +1,7 @@
 package dev.mkgg.notes.common;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -8,6 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 /** Maps domain exceptions to RFC 9457 problem-detail responses. */
 @RestControllerAdvice
 public class GlobalExceptionHandler {
+
+  private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
   @ExceptionHandler(ResourceNotFoundException.class)
   public ProblemDetail handleNotFound(ResourceNotFoundException e) {
@@ -42,6 +46,8 @@ public class GlobalExceptionHandler {
   @ExceptionHandler(dev.mkgg.notes.billing.BillingUnavailableException.class)
   public ProblemDetail handleBillingUnavailable(
       dev.mkgg.notes.billing.BillingUnavailableException e) {
+    // The client gets a generic message; the real cause must be diagnosable from logs.
+    log.error("Checkout unavailable", e);
     return ProblemDetail.forStatusAndDetail(
         HttpStatus.SERVICE_UNAVAILABLE, "Checkout is unavailable right now. Please try again.");
   }

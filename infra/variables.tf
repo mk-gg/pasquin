@@ -74,6 +74,18 @@ variable "polar_product_id" {
   default     = ""
 }
 
+variable "monthly_budget_usd" {
+  description = "Monthly cost cap for billing alerts (the $130 credit spread over a year is ~$11/mo)"
+  type        = string
+  default     = "12"
+}
+
+variable "billing_alert_email" {
+  description = "Where AWS Budgets sends cost alerts"
+  type        = string
+  default     = "hello@mkgg.dev"
+}
+
 variable "google_client_id" {
   description = "Google OAuth client id (public; the audience for ID tokens)"
   type        = string

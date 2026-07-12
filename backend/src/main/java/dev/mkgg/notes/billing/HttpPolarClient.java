@@ -47,8 +47,12 @@ public class HttpPolarClient implements PolarClient {
     try {
       HttpResponse<String> response = http.send(request, HttpResponse.BodyHandlers.ofString());
       if (response.statusCode() / 100 != 2) {
+        String detail = response.body() == null ? "" : response.body();
         throw new BillingUnavailableException(
-            "Polar checkout creation failed with status " + response.statusCode());
+            "Polar checkout creation failed with status "
+                + response.statusCode()
+                + ": "
+                + detail.substring(0, Math.min(detail.length(), 500)));
       }
       JsonNode url = objectMapper.readTree(response.body()).path("url");
       if (!url.isTextual()) {
