@@ -104,12 +104,16 @@ public class NoteService {
     return toResponse(metadata, content);
   }
 
-  /** Deletes a note and its content; requires the note's edit key. */
+  /**
+   * Deletes a note; requires the note's edit key. Only the metadata is removed here — that alone
+   * makes the note unreachable (every read resolves metadata first). The content body and any
+   * embedded images are swept asynchronously by the cleanup Lambda listening to the table's stream,
+   * the same path that cleans up TTL-expired notes.
+   */
   public void delete(String slug, String editKey) {
     NoteMetadata metadata = findActive(slug);
     requireEditKey(metadata, editKey);
     noteRepository.deleteBySlug(slug);
-    contentStore.delete(slug);
   }
 
   /**

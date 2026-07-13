@@ -5,6 +5,12 @@ resource "aws_dynamodb_table" "notes" {
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "slug"
 
+  # Feeds the cleanup Lambda: every removed item (TTL expiry or delete)
+  # triggers an S3 sweep of the note body and its images. The Lambda only
+  # needs the slug, which is the key.
+  stream_enabled   = true
+  stream_view_type = "KEYS_ONLY"
+
   attribute {
     name = "slug"
     type = "S"

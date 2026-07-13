@@ -26,15 +26,18 @@
 - **Password protection** — reader-facing passwords, hashed with BCrypt. Protected notes hide their title *and* content until unlocked.
 - **Auto-expiry** — 1 hour to 1 month, implemented server-side with DynamoDB TTL (the note deletes itself).
 - **My Notes** — a per-browser sidebar (search, rename, delete, copy link) backed by `localStorage`.
+- **Google sign-in (optional)** — syncs the note list across browsers and devices.
+- **Premium image uploads** — a one-time purchase (via [Polar](https://polar.sh) as merchant of record, confirmed by signed webhook) unlocks embedding images in notes. Uploads are validated by magic bytes, capped per image and per user, and served from the CDN.
 - **Sharing extras** — one-click copy, email, and a generated **QR code** for handing a note to a phone.
-- **Abuse reporting & contact** — public forms with validation, rate limiting, and a spam honeypot.
+- **Abuse reporting & contact** — public forms with validation, rate limiting, and a spam honeypot. Submissions are emailed to the operator via **SES**.
+- **Moderation tooling** — an operator-only takedown endpoint removes a reported note everywhere at once: metadata, content, embedded images, and CloudFront edge caches.
 - **Dark / light theme**, responsive down to mobile.
 
 ## Architecture
 
 ![Architecture diagram](docs/architecture.png)
 
-Static frontend served globally from **CloudFront + S3**; a containerized Spring Boot API on **App Runner** persists note metadata to **DynamoDB** and note bodies to **S3**. Everything is defined in Terraform.
+Static frontend served globally from **CloudFront + S3**; a containerized Spring Boot API on **App Runner** persists note metadata to **DynamoDB** and note bodies to **S3**. Premium images live in the content bucket behind a dedicated CloudFront `images/*` behavior, contact/report submissions are relayed by **SES**, and purchases go through **Polar** (checkout API out, signed `order.paid` webhooks in). An **AWS Budgets** alarm emails the operator before costs can creep. Everything is defined in Terraform.
 
 ### CI/CD
 
@@ -55,7 +58,8 @@ Push to `main` and the changed app deploys itself. GitHub authenticates to AWS v
 | **Frontend** | Astro 5, React 19, TipTap 3, Tailwind CSS 4, shadcn/ui, TypeScript |
 | **Backend** | Spring Boot 4, Java 25, AWS SDK v2, BCrypt, Bucket4j (rate limiting) |
 | **Data** | DynamoDB (on-demand, TTL), S3 |
-| **Infra** | Terraform · App Runner, CloudFront, ECR, DynamoDB, S3, IAM |
+| **Billing** | Polar (merchant of record) · Standard-Webhooks signature verification |
+| **Infra** | Terraform · App Runner, CloudFront, ECR, DynamoDB, S3, SES, IAM, Budgets |
 | **CI/CD** | GitHub Actions with OIDC federation |
 | **Quality** | Spotless (Google Java Format), `astro check`, JUnit |
 

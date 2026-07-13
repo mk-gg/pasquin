@@ -79,10 +79,15 @@ aws apprunner resume-service --service-arn <arn>
 
 DynamoDB (on-demand), S3, and CloudFront are all pennies at hobby traffic.
 
-## Not yet automated
+## Event-driven cleanup
 
-- Custom domain + ACM certificate (needs a domain; cert must be in
-  `us-east-1` for CloudFront).
-- Orphaned S3 content cleanup when DynamoDB TTL expires a note
-  (DynamoDB Streams → Lambda).
-- CI/CD (GitHub Actions) — planned after the first manual deploy is proven.
+Removing a note's DynamoDB item — whether by TTL expiry, a user delete,
+or an admin takedown — emits a stream event that triggers the cleanup
+Lambda (`lambda.tf`, code in `lambda/cleanup/`). It deletes the orphaned
+S3 content body and any premium images the note embedded, then evicts
+those images from CloudFront. Costs effectively nothing: Lambda and
+stream reads sit inside the always-free tier.
+
+Everything once on the "not yet automated" list has shipped: custom
+domain + ACM (`acm.tf`), CI/CD (GitHub Actions with OIDC), and this
+cleanup pipeline.

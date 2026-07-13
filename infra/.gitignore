@@ -18,3 +18,6 @@ override.tf.json
 
 # NOTE: .terraform.lock.hcl is intentionally NOT ignored — it pins provider
 # versions and should be committed for reproducible builds.
+
+# Lambda zip artifacts (archive_file output)
+build/
