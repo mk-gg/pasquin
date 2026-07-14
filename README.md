@@ -35,9 +35,9 @@
 
 ## Architecture
 
-![Architecture diagram](docs/architecture.png)
+<img src="docs/architecture.png" alt="Architecture diagram" width="600">
 
-Static frontend served globally from **CloudFront + S3**; a containerized Spring Boot API on **App Runner** persists note metadata to **DynamoDB** and note bodies to **S3**. Premium images live in the content bucket behind a dedicated CloudFront `images/*` behavior, contact/report submissions are relayed by **SES**, and purchases go through **Polar** (checkout API out, signed `order.paid` webhooks in). An **AWS Budgets** alarm emails the operator before costs can creep. Everything is defined in Terraform.
+Static frontend served globally from **CloudFront + S3**; a containerized Spring Boot API on **App Runner** persists note metadata to **DynamoDB** and note bodies to **S3**. Premium images live in the content bucket behind a dedicated CloudFront `images/*` behavior, contact/report submissions are relayed by **SES**, and purchases go through **Polar** (checkout API out, signed `order.paid` webhooks in). Storage cleanup is event-driven: removing a note (TTL expiry or delete) emits a **DynamoDB Streams** event, and a **Lambda** sweeps the orphaned S3 body, its images, and their CDN caches. An **AWS Budgets** alarm emails the operator before costs can creep. Everything is defined in Terraform.
 
 ### CI/CD
 
@@ -59,7 +59,7 @@ Push to `main` and the changed app deploys itself. GitHub authenticates to AWS v
 | **Backend** | Spring Boot 4, Java 25, AWS SDK v2, BCrypt, Bucket4j (rate limiting) |
 | **Data** | DynamoDB (on-demand, TTL), S3 |
 | **Billing** | Polar (merchant of record) · Standard-Webhooks signature verification |
-| **Infra** | Terraform · App Runner, CloudFront, ECR, DynamoDB, S3, SES, IAM, Budgets |
+| **Infra** | Terraform · App Runner, CloudFront, ECR, DynamoDB (+ Streams), S3, Lambda, SES, IAM, Budgets |
 | **CI/CD** | GitHub Actions with OIDC federation |
 | **Quality** | Spotless (Google Java Format), `astro check`, JUnit |
 
