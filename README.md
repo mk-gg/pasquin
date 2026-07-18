@@ -1,10 +1,10 @@
 # Pasquin
 
-**Anonymous notes, shared instantly.** Write a note, get a shareable link — no account required. Optionally protect it with a password or set it to auto-expire.
+**Anonymous notes, shared instantly.** Write a note, get a shareable link ! No account required. Optionally protect it with a password or set it to auto-expire.
 
 🔗 **Live demo:** https://pasquin.mkgg.dev
 
-> *A [pasquinade](https://en.wikipedia.org/wiki/Pasquinade) is an anonymous note posted in a public place — named after "Pasquino," a statue in Renaissance Rome where people stuck up anonymous verses. That's exactly what this app is: anonymous notes, posted to a public link.*
+> *A [pasquinade](https://en.wikipedia.org/wiki/Pasquinade) is an anonymous note posted in a public place which is named after "Pasquino," a statue in Renaissance Rome where people stuck up anonymous verses. That's exactly what this app is: anonymous notes, posted to a public link.*
 
 ## Screenshots
 
