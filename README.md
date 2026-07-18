@@ -8,13 +8,10 @@
 
 ## Screenshots
 
-| | |
-| --- | --- |
-| ![The rich-text editor](docs/editor.png) | ![Share dialog with QR code](docs/share.png) |
-| *The editor* | *Share dialog with QR code* |
-
-![Viewing a shared note](docs/viewer.png)
-*Reading a shared note*
+| | | |
+| --- | --- | --- |
+| <img src="docs/editor.png" width="250" alt="The rich-text editor"> | <img src="docs/share.png" width="250" alt="Share dialog with QR code"> | <img src="docs/viewer.png" width="250" alt="Viewing a shared note"> |
+| *The editor* | *Share dialog with QR code* | *Reading a shared note* | 
 
 ---
 
@@ -35,7 +32,7 @@
 
 ## Architecture
 
-<img src="docs/architecture.png" alt="Architecture diagram" width="600">
+<img src="docs/architecture.png" alt="Architecture diagram" width="550">
 
 Static frontend served globally from **CloudFront + S3**; a containerized Spring Boot API on **App Runner** persists note metadata to **DynamoDB** and note bodies to **S3**. Premium images live in the content bucket behind a dedicated CloudFront `images/*` behavior, contact/report submissions are relayed by **SES**, and purchases go through **Polar** (checkout API out, signed `order.paid` webhooks in). Storage cleanup is event-driven: removing a note (TTL expiry or delete) emits a **DynamoDB Streams** event, and a **Lambda** sweeps the orphaned S3 body, its images, and their CDN caches. An **AWS Budgets** alarm emails the operator before costs can creep. Everything is defined in Terraform.
 
@@ -111,6 +108,26 @@ pasquin/
 └─ .github/    # CI/CD workflows
 ```
 
-## Credits & license
+## license
 
-The frontend is built on the [astro-erudite](https://github.com/jktrn/astro-erudite) template (MIT © Trevor Lee); that license is retained in [`frontend/LICENSE`](frontend/LICENSE). Application code, backend, and infrastructure are original work.
+MIT License
+
+Copyright (c) 2026 Mark Plantado
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
