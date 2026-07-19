@@ -70,10 +70,27 @@ export function getMyNote(slug: string): MyNote | null {
   return load()[slug] ?? null
 }
 
+/** True when the note has a TTL that has already passed. */
+export function isExpired(note: MyNote): boolean {
+  return note.expiresAt != null && new Date(note.expiresAt).getTime() <= Date.now()
+}
+
+/**
+ * Removes every locally-tracked note whose TTL has passed, using the same path
+ * as removeMyNote (local delete + best-effort account delete when signed in).
+ */
+export function pruneExpiredNotes(): void {
+  for (const note of Object.values(load())) {
+    if (isExpired(note)) removeMyNote(note.slug)
+  }
+}
+
 export function listMyNotes(): MyNote[] {
-  return Object.values(load()).sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  )
+  return Object.values(load())
+    .filter((note) => !isExpired(note))
+    .sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
 }
 
 export function renameMyNote(slug: string, title: string): void {

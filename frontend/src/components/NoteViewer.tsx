@@ -30,7 +30,13 @@ import "@/components/tiptap-templates/simple/simple-editor.scss"
 
 import { ApiError, getNote, unlockNote, updateNote, type NoteResult } from "@/lib/api"
 import { requestSignIn, useAuth } from "@/lib/auth"
-import { adoptNote, dismissKeyBanner, getMyNote, type MyNote } from "@/lib/my-notes"
+import {
+  adoptNote,
+  dismissKeyBanner,
+  getMyNote,
+  removeMyNote,
+  type MyNote,
+} from "@/lib/my-notes"
 import { KeyField } from "@/components/KeyField"
 import { NoteInfoPopover } from "@/components/NoteInfo"
 import { NoteOwnerControls } from "@/components/NoteOwnerControls"
@@ -294,7 +300,14 @@ export function NoteViewer() {
         setStatus(
           fetched.passwordProtected && fetched.content == null ? "locked" : "ready"
         )
-      } catch {
+      } catch (e) {
+        // Only a definitive 404 means the note is gone (expired via TTL or
+        // deleted from another device) — drop the stale local entry so it
+        // stops showing in the sidebar. Transient failures (network, 5xx)
+        // must never discard the edit key, which is unrecoverable.
+        if (e instanceof ApiError && e.status === 404 && getMyNote(slug)) {
+          removeMyNote(slug)
+        }
         setStatus("notFound")
       }
     }

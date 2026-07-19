@@ -14,6 +14,7 @@ import { ApiError, deleteNote, updateNote } from "@/lib/api"
 import { requestSignIn, useAuth } from "@/lib/auth"
 import {
   listMyNotes,
+  pruneExpiredNotes,
   removeMyNote,
   renameMyNote,
   syncOnSignIn,
@@ -79,6 +80,8 @@ export function NotesSidebar({ currentSlug }: { currentSlug?: string }) {
 
   useEffect(() => {
     if (!open) return
+    // Drop notes that have expired server-side before listing them.
+    pruneExpiredNotes()
     setNotes(listMyNotes())
     // Signed-in users also pull notes created on other devices; show the
     // local list immediately and refresh once the account merge lands.
